@@ -1,7 +1,6 @@
 extends app
 
 block TIDORY
-  include views/Loader
   s_t3
     #index(
       x-data='{ sidebar: false }'
@@ -9,5 +8,5 @@ block TIDORY
       include views/Main
       include views/Sidebar
       include views/Indicator
-      include views/Top
       include views/Bottom
+      include views/Loader

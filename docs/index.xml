@@ -372,7 +372,7 @@
     </variablegroup>
   </variables>
   <default>
-    <liststyle>list</liststyle>
+    <liststyle>gallery</liststyle>
     <recentEntries>5</recentEntries>
     <recentComments>5</recentComments>
     <lengthOfRecentNotice>32</lengthOfRecentNotice>

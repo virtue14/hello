@@ -44,10 +44,14 @@ script(once='alpine-article-component').
     },
 
     /**
-     * Syntax highlighting code blocks in template
+     * Syntax highlighting code blocks in template (Shiki CDN)
      */
     highlightCodeBlocks () {
-      this.$article.querySelectorAll('pre code').forEach(hljs.highlightElement)
+      this.$article.querySelectorAll('pre code').forEach(codeBlock => {
+        if (window.highlightWithShiki) {
+          window.highlightWithShiki(codeBlock)
+        }
+      })
     },
 
     /**

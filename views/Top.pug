@@ -1,39 +1,104 @@
-aside#top(
-  x-data='top'
-  @scroll.window='toggle'
-  :class='open ? "backdrop-blur bg-h-100/50 dark:bg-h-800/80" : "bg-transparent"'
-  class='w-full box-border px-4 h-14 top-0 fixed flex justify-between items-center z-[90] <s_if_var_sidebar>xl:w-c</s_if_var_sidebar>')
-  .img
-    img.thumb(
-      @click='sidebar = ! sidebar'
-      class='lazyload rounded-full w-9 h-9 cursor-pointer object-cover <s_if_var_sidebar>xl:invisible</s_if_var_sidebar>'
-      data-src='[##_image_##]'
-      data-sizes='auto'
-      alt='[##_blogger_##]'
-      width='36'
-      height='36')
-  .tit(
-    x-show='open'
-    x-transition:enter='transition ease-linear duration-100'
-    x-transition:enter-start='opacity-0'
-    x-transition:enter-end='opacity-100'
-    x-transition:leave='transition ease-linear duration-100'
-    x-transition:leave-start='opacity-100'
-    x-transition:leave-end='opacity-0'
-    class='max-w-[calc(80vw-152px)] h-5')
-    .txt(class='m-0 text-overflow-hidden text-sm font-bold text-h-800 dark:text-h-200') [##_page_title_##]
-  #menu-toolbar(
-    x-data='menuToolbar'
-    class='menu_toolbar')
-    template(
-      x-data='subscribe'
-      x-if='canSubscribe')
-      button.subscribe(
-        :data-blog-id='T.config.BLOG.id'
-        :data-url='TistoryBlog.tistoryUrl'
-        class='btn_subscription')
-        span.txt(class='text-hidden') 구독하기
-        i.ico(class='fa-solid fa-star')
+//- GNB (Global Navigation Bar)
+nav#global-navigation(
+  class='w-full bg-h-100 dark:bg-h-800 border-b border-h-300 dark:border-h-700 mb-8'
+  aria-label='주 메뉴'
+)
+  .container(class='max-w-7xl mx-auto px-4 py-3')
+    //- 카테고리 메가 메뉴 (1depth 가로 배치, 2depth 호버 드롭다운)
+    nav#header-categories.category-mega-menu
+
+script.
+  // 카테고리 메가 메뉴 생성 (사이드바 로드 대기)
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      var sidebarCategory = document.querySelector('#sidebar .tt_category');
+      var headerCategories = document.querySelector('#header-categories');
+      
+      if (sidebarCategory && headerCategories) {
+        var categoryItems = sidebarCategory.querySelectorAll('.category_list > li');
+        
+        if (categoryItems.length > 0) {
+          var megaMenu = document.createElement('ul');
+          megaMenu.className = 'mega-menu-list';
+          
+          categoryItems.forEach(function(item) {
+            var clonedItem = item.cloneNode(true);
+            var link = clonedItem.querySelector('.link_item');
+            
+            if (link) {
+              var menuItem = document.createElement('li');
+              menuItem.className = 'mega-menu-item';
+              
+              var mainLink = document.createElement('a');
+              mainLink.href = link.href;
+              mainLink.textContent = link.textContent.split('(')[0].trim();
+              mainLink.className = 'mega-menu-link';
+              
+              menuItem.appendChild(mainLink);
+              
+              var subCategoryList = clonedItem.querySelector('.sub_category_list');
+              if (subCategoryList) {
+                var dropdown = document.createElement('div');
+                dropdown.className = 'mega-menu-dropdown';
+                dropdown.appendChild(subCategoryList.cloneNode(true));
+                menuItem.appendChild(dropdown);
+              }
+              
+              megaMenu.appendChild(menuItem);
+            }
+          });
+          
+          headerCategories.appendChild(megaMenu);
+        }
+      }
+    }, 100);
+  });
+
+style
+  :postcss
+    #global-navigation {
+      .category-mega-menu {
+        .mega-menu-list {
+          @apply flex flex-wrap gap-4 items-center justify-center m-0 p-0;
+        }
+        
+        .mega-menu-item {
+          @apply list-none relative;
+          
+          .mega-menu-link {
+            @apply text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100 font-medium transition-colors no-underline text-sm px-3 py-2 block;
+          }
+          
+          .mega-menu-dropdown {
+            @apply absolute top-full left-0 mt-1 bg-h-100 dark:bg-h-800 border border-h-300 dark:border-h-700 rounded-lg shadow-lg p-3 min-w-[200px] opacity-0 invisible transition-all duration-200 z-50;
+          }
+          
+          &:hover .mega-menu-dropdown {
+            @apply opacity-100 visible;
+          }
+          
+          .sub_category_list {
+            @apply m-0 p-0;
+            
+            li {
+              @apply list-none;
+            }
+            
+            a {
+              @apply block py-1.5 px-2 rounded text-xs text-h-600 dark:text-h-400 hover:bg-h-200 dark:hover:bg-h-700 hover:text-h-900 dark:hover:text-h-100 transition-colors no-underline;
+            }
+            
+            .c_cnt {
+              @apply text-h-400 text-xs ml-1;
+            }
+          }
+        }
+      }
+    }
+
+
+
+
 
 script.
   document.addEventListener('alpine:init', () => Alpine.data('top', () => ({

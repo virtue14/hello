@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer base {
+
   a,
   button {
     @apply pointer-events-auto;
@@ -16,6 +17,9 @@
 
   .permalink-container {
     @apply w-full px-4 lg:px-0 lg:max-w-screen-lg lg:w-pem lg:mx-auto;
+    /* 티스토리 관리자 설정 너비: 800~1200px 범위 제한 */
+    min-width: min(800px, 100%);
+    max-width: min(1200px, 100%);
   }
 
   .cover-cols-1 {
@@ -138,4 +142,100 @@
   .lazyloaded {
     @apply animate-none bg-h-100;
   }
+}
+
+/* highlight.js 코드 블록 스타일 */
+.code-block-wrapper {
+  background-color: #282c34;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin: 1.5rem 0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Code Block Header (Google-style) */
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background-color: #21252b;
+  border-bottom: 1px solid #181a1f;
+}
+
+.code-language {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #abb2bf;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.code-copy-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  color: #abb2bf;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.code-copy-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.code-copy-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* highlight.js Pre Styles */
+.code-block-wrapper pre {
+  margin: 0 !important;
+  padding: 0.25rem !important;
+  overflow-x: auto;
+  background-color: #282c34 !important;
+  font-family: 'D2Coding', 'D2Coding ligature', 'Source Code Pro', monospace;
+  font-size: 0.95rem;
+  line-height: 1.0;
+  tab-size: 4;
+  -moz-tab-size: 4;
+}
+
+.code-block-wrapper pre code {
+  display: block;
+  background-color: transparent !important;
+  padding: 0;
+}
+
+/* Custom Scrollbar for Code Blocks */
+.code-block-wrapper pre::-webkit-scrollbar {
+  height: 8px;
+  background-color: #282c34;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-track {
+  background-color: #282c34;
+  border-radius: 4px;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-thumb {
+  background-color: #5c6370;
+  border-radius: 4px;
+}
+
+.code-block-wrapper pre::-webkit-scrollbar-thumb:hover {
+  background-color: #abb2bf;
+}
+
+/* Dark Mode Selection Consistency */
+.code-block-wrapper pre code ::selection {
+  background-color: #3e4451;
+  color: inherit;
 }

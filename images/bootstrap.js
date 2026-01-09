@@ -2,7 +2,7 @@ class DarkMode {
   /**
    * Create DarkMode Instance
    */
-  constructor () {
+  constructor() {
     /**
      * Class name
      *
@@ -22,7 +22,7 @@ class DarkMode {
   /**
    * Toggle
    */
-  toggle () {
+  toggle() {
     localStorage.setItem(this.key, this.on ? 'light' : 'dark')
     document.documentElement.classList.toggle(this.class)
   }
@@ -32,7 +32,7 @@ class DarkMode {
    *
    * @return {boolean}
    */
-  get on () {
+  get on() {
     return document.documentElement.classList.contains(this.class)
   }
 
@@ -41,7 +41,7 @@ class DarkMode {
    *
    * @return {boolean}
    */
-  get preferred () {
+  get preferred() {
     const os = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
     const theme = localStorage.getItem(this.key) || os
 
@@ -68,4 +68,27 @@ darkMode.preferred && darkMode.toggle()
 /* global tjQuery: readonly, $: writable */
 if (Object.hasOwn(window, 'tjQuery')) {
   window.jQuery = $ = tjQuery
+}
+
+/**
+ * Mock TISTORY global objects for local development
+ *
+ * T and TistoryBlog are global objects provided by TISTORY.
+ * They are not available in local development environment.
+ */
+if (typeof T === 'undefined') {
+  window.T = {
+    config: {
+      ROLE: 'guest',
+      BLOG: {
+        id: ''
+      }
+    }
+  }
+}
+
+if (typeof TistoryBlog === 'undefined') {
+  window.TistoryBlog = {
+    tistoryUrl: ''
+  }
 }

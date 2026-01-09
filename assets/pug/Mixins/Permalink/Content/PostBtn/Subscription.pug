@@ -1,10 +1,12 @@
-if process.env.NODE_ENV === 'development'
+//- 개발 환경 전용: #article .container_postbtn이 존재할 때만 렌더링
+//- x-teleport는 target이 반드시 존재해야 하므로 production에서만 사용
+if process.env.NODE_ENV !== 'development'
   template(x-teleport='#article .container_postbtn')
     button.btn_menu_toolbar.btn_subscription(
       type='button'
       class='#subscribe'
-      data-blog-id='3751118'
-      data-url='https://pronist.tistory.com/5'
+      :data-blog-id='T.config.BLOG.id'
+      :data-url='TistoryBlog.tistoryUrl'
       data-device='web_pc')
       em.txt_state 구독하기
       strong.txt_tool_id hELLO.

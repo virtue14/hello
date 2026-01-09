@@ -1,0 +1,40 @@
+//- 사용자 정의 메뉴 및 카테고리 네비게이션
+nav#main-navigation(class='w-full bg-h-100 dark:bg-h-800 border-b border-h-300 dark:border-h-700')
+  .container(class='max-w-7xl mx-auto px-4 py-3')
+    //- 메뉴 섹션
+    .menu-section(class='mb-4')
+      ul.main-menu(class='flex gap-6 justify-center')
+        s_menu_link1
+          li.menu-item
+            a(href='[##_s_menu_link1_link_##]' target='[##_s_menu_link1_target_##]' class='text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100') [##_s_menu_link1_name_##]
+        s_menu_link2
+          li.menu-item
+            a(href='[##_s_menu_link2_link_##]' target='[##_s_menu_link2_target_##]' class='text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100') [##_s_menu_link2_name_##]
+        s_menu_link3
+          li.menu-item
+            a(href='[##_s_menu_link3_link_##]' target='[##_s_menu_link3_target_##]' class='text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100') [##_s_menu_link3_name_##]
+        s_menu_link4
+          li.menu-item
+            a(href='[##_s_menu_link4_link_##]' target='[##_s_menu_link4_target_##]' class='text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100') [##_s_menu_link4_name_##]
+        s_menu_guestbook
+          li.menu-item
+            a(href='[##_guestbook_link_##]' class='text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100') 방명록
+    
+    //- 카테고리 섹션
+    .category-section
+      s_sidebar_element
+        s_sidebar
+          s_category
+            ul.category-list(class='space-y-2')
+              s_category_1
+                li.category-item
+                  a.category-link(href='[##_category_link_1_##]' class='text-sm text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100') 
+                    | [##_category_name_1_##] 
+                    span.count(class='text-h-400') ([##_category_count_1_##]])
+                  s_category_sub_1
+                    ul.subcategory-list(class='ml-4 mt-2 space-y-1')
+                      s_category_2
+                        li.subcategory-item
+                          a.subcategory-link(href='[##_category_link_2_##]' class='text-xs text-h-500 dark:text-h-400 hover:text-h-800 dark:hover:text-h-200')
+                            | [##_category_name_2_##] 
+                            span.count(class='text-h-400') ([##_category_count_2_##]])

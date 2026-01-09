@@ -33,7 +33,9 @@
     "@alpinejs/intersect": "^3.14.5",
     "alpinejs": "^3.14.5",
     "highlight.js": "^11.10.0",
+    "highlightjs-copy": "^1.0.6",
     "lazysizes": "^5.3.2",
+    "shiki": "^3.21.0",
     "swiper": "^11.1.15",
     "tailwindcss": "3.2.7",
     "tidory": "8.4.3"

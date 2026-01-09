@@ -4,22 +4,10 @@ aside#bottom(
   .wrap(class='flex gap-x-2.5')
     button.theme.btn(@click='toggleTheme')
       span.txt 테마
-      i.ico(class='fa-solid fa-moon')
+      i.ico(:class="($store.app && $store.app.dark) ? 'fa-solid fa-sun' : 'fa-solid fa-moon'")
     a.top.btn(href='#hELLO')
       span.txt 상단으로
       i.ico(class='fa-solid fa-chevron-up')
-
-script.
-  document.addEventListener('alpine:init', () => Alpine.data('bottom', () => ({
-    /**
-     * Toggle Theme
-     */
-    toggleTheme () {
-      darkMode.toggle()
-
-      this.$data.dark = ! this.$data.dark
-    }
-  })))
 
 style
   :postcss

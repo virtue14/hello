@@ -3,11 +3,6 @@ import lazySizes from 'lazysizes'
 
 lazySizes.cfg.preloadAfterLoad = true
 
-/** @see https://highlightjs.org */
-import hljs from 'highlight.js'
-
-window.hljs = hljs
-
 /** @see https://swiperjs.com */
 import Swiper from 'swiper'
 import { Autoplay, Navigation } from 'swiper/modules'

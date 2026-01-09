@@ -1,0 +1,65 @@
+//- 메인 네비게이션 (메뉴 + 카테고리)
+nav#main-navigation(
+  class='w-full bg-h-100 dark:bg-h-800 border-b border-h-300 dark:border-h-700 py-4'
+  aria-label='주 메뉴'
+)
+  .container(class='max-w-7xl mx-auto px-4')
+    
+    //- 사용자 정의 메뉴
+    .menu-section(class='mb-6')
+      ul.main-menu(class='flex flex-wrap gap-4 justify-center items-center')
+        s_menu
+          li.menu-item(class='list-none')
+            a(
+              href='[##_var_menu_link_##]' 
+              target='[##_var_menu_target_##]'
+              class='text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100 font-medium transition-colors'
+            ) [##_var_menu_name_##]
+    
+    //- 카테고리 (접을 수 있는 형태)
+    s_sidebar_element
+      .category-section(
+        x-data='{ open: false }'
+        class='border-t border-h-300 dark:border-h-700 pt-4'
+      )
+        button(
+          @click='open = !open'
+          class='w-full flex justify-between items-center text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100 font-semibold mb-2'
+        )
+          span 카테고리
+          svg(
+            :class='open ? "rotate-180" : ""'
+            class='w-4 h-4 transition-transform'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+          )
+            path(stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7')
+        
+        div(
+          x-show='open'
+          x-transition
+          class='space-y-2'
+        )
+          s_sidebar
+            s_category
+              ul.category-list(class='space-y-2')
+                s_category_1
+                  li.category-item
+                    a.category-link(
+                      href='[##_category_link_1_##]'
+                      class='flex justify-between items-center text-sm text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100 transition-colors'
+                    )
+                      span [##_category_name_1_##]
+                      span.count(class='text-xs text-h-400') ([##_category_count_1_##]])
+                    
+                    s_category_sub_1
+                      ul.subcategory-list(class='ml-6 mt-2 space-y-1')
+                        s_category_2
+                          li.subcategory-item
+                            a.subcategory-link(
+                              href='[##_category_link_2_##]'
+                              class='flex justify-between items-center text-xs text-h-500 dark:text-h-400 hover:text-h-800 dark:hover:text-h-200 transition-colors'
+                            )
+                              span [##_category_name_2_##]
+                              span.count(class='text-xs text-h-400') ([##_category_count_2_##]])

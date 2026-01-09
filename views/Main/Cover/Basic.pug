@@ -324,64 +324,70 @@ style
       }
     }
 
-//- gallery
+//- gallery (카드형 레이아웃)
 style
   :postcss
     [data-list-style=gallery] {
+      @apply gap-4 lg:gap-6;
+
       .post {
-        .link {
-          &:hover + .content {
-            @apply before:opacity-100 before:duration-300;
-
-            .info {
-              @apply opacity-100 duration-300;
-            }
-          }
-        }
-
         .content {
-          @apply before:opacity-0 before:absolute before:right-0 before:top-0 before:w-full before:h-full;
-          @apply before:z-10 before:bg-gradient-to-b before:from-transparent before:to-h-700/50;
-          @apply relative flex items-end z-20;
+          @apply flex flex-col gap-y-4;
 
           .picture {
-            @apply w-full h-full;
-
             .img,
             .fallback {
-              @apply pt-[100%] relative w-full h-full;
+              @apply pt-[66.66%] relative overflow-hidden rounded-lg;
             }
 
             .img {
               .thumb {
-                @apply absolute top-0 left-0 w-full h-full object-cover bg-h-100;
+                @apply absolute top-0 left-0 w-full h-full object-cover bg-h-100 rounded-lg transition-transform duration-300;
               }
             }
           }
 
           .info {
-            @apply opacity-0 absolute w-full z-20;
-            @apply pb-6 max-md:pb-8;
+            @apply flex flex-col gap-y-2;
 
             .header {
-              @apply flex flex-col justify-end items-center w-full text-center;
+              @apply flex flex-col-reverse gap-y-1;
 
               .tit {
-                @apply px-6 text-h-200 text-xl sm:text-lg md:text-2xl font-semibold;
-                @apply mb-7 sm:mb-5 md:mb-9;
+                @apply text-base lg:text-lg font-bold text-h-800 dark:text-h-200 overflow-hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
               }
 
               .desc {
-                @apply flex gap-x-1 text-sm max-md:hidden;
+                @apply flex gap-x-2 text-xs;
 
                 * {
-                  @apply text-h-200;
+                  @apply text-h-400;
+                }
+
+                .category {
+                  @apply font-medium text-h-blue;
                 }
               }
             }
 
             .summary {
               @apply hidden;
+            }
+          }
+        }
+
+        /* 호버 효과 */
+        &:hover {
+          .content {
+            .picture {
+              .img {
+                .thumb {
+                  @apply scale-105;
+                }
+              }
             }
           }
         }
