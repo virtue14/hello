@@ -1,7 +1,30 @@
 s_tag
   section#tag(
-    x-init='$store.header.title = "태그 클라우드"'
+    x-data='tag'
     class='index-container')
+    script.
+      document.addEventListener('alpine:init', () => {
+        Alpine.store('header').title = '태그 클라우드'
+      })
+
+    //- 검색 입력 필드 & 카운터 추가
+    .search-container(class='mb-6 px-1 flex flex-col sm:flex-row items-center justify-between gap-4')
+      input.search-input(
+        type='text'
+        x-model='search'
+        @input='filterTags()'
+        placeholder='태그 검색...'
+        class='w-full sm:w-auto flex-1 px-4 py-3 rounded-lg bg-h-200 dark:bg-h-700 text-h-500 dark:text-h-200 focus:outline-none focus:ring-2 focus:ring-h-400 placeholder-h-400 dark:placeholder-h-500 transition-colors'
+      )
+
+      div.count(
+        x-show='total > 0'
+        class='text-sm font-medium text-h-400 dark:text-h-500 whitespace-nowrap'
+      )
+        span(x-text='count')
+        span.mx-1 /
+        span(x-text='total')
+
     ul.tags(class='grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6')
       s_tag_rep
         li.tag

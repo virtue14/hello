@@ -3,7 +3,9 @@ li#random-tags.el
     a.link(
       class='link_tit'
       href='/tag') 태그
-  .tags(class='flex flex-wrap gap-2')
+  .tags(
+    x-data='tag'
+    class='flex flex-wrap gap-2')
     s_random_tags
       .tag
         a.name(
