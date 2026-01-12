@@ -2,61 +2,95 @@ li#category.el(x-data='category')
   | [##_category_list_##]
 
 script.
-  document.addEventListener('alpine:init', () => Alpine.data('category', () => ({
-    /**
-     * @var {Boolean} foldableCategory
-     */
-    foldableCategory: skinOptions.foldableCategory,
+  document.addEventListener('DOMContentLoaded', function() {
+    // 1. 카테고리 펼침/접기 및 하이라이트 로직
+    const subCategories = document.querySelectorAll('.tt_category .sub_category_list');
+    const currentPath = window.location.pathname;
 
-    /**
-     * Init
-     */
-    init () {
-      if (this.foldableCategory) {
-        this.$subCategories.forEach(this.foldable.bind(this))
+    subCategories.forEach(function(subCategory) {
+      const parentLi = subCategory.parentElement;
+      const links = subCategory.querySelectorAll('a');
+      let isActive = false;
+
+      // 현재 URL이 서브 카테고리 내에 있는지 확인
+      links.forEach(function(link) {
+        try {
+          const linkPath = new URL(link.href, window.location.origin).pathname;
+          if (currentPath === linkPath) {
+            isActive = true;
+            link.classList.add('is-active');
+          }
+        } catch (e) {}
+      });
+
+      // 부모 카테고리 링크도 확인
+      const parentLink = parentLi.querySelector(':scope > .link_item');
+      if (parentLink) {
+        try {
+          const parentPath = new URL(parentLink.href, window.location.origin).pathname;
+          if (currentPath === parentPath) {
+            isActive = true;
+            parentLink.classList.add('is-active');
+          }
+        } catch (e) {}
       }
-    },
+      
+      // 아이콘 생성
+      const icon = document.createElement('i');
+      // z-index: 20, padding: 10px (모바일 터치 영역 확보), pointer-events: auto
+      icon.className = 'fa-solid fa-chevron-right absolute right-0 text-2xs cursor-pointer leading-5 transition-transform duration-200';
+      icon.style.cssText = 'top: 0; padding: 10px; z-index: 20; color: #999;'; 
 
-    /**
-     * Foldable
-     *
-     * @param {HTMLElement} $subCategory
-     */
-    foldable ($subCategory) {
-      $subCategory.parentNode.setAttribute('x-data', '{ open: false }')
-      $subCategory.setAttribute('x-show', 'open')
-      $subCategory.setAttribute('x-collapse', '')
+      // 초기 상태 설정
+      if (isActive) {
+        // 활성 상태면 펼침
+        subCategory.style.display = 'block';
+        icon.classList.add('rotate-90');
+      } else {
+        // 비활성 상태면 접음 (옵션에 따라 다를 수 있으나 기본적으로 접음)
+        if (skinOptions.foldableCategory) {
+          subCategory.style.display = 'none';
+        } else {
+           icon.classList.add('rotate-90'); // 접기 기능 끄면 항상 펼침 표시
+        }
+      }
 
-      const $icon = this.$icon
+      // 클릭 이벤트 핸들러 (아이콘)
+      icon.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation(); // 부모 링크 클릭 방지
+        
+        const isHidden = getComputedStyle(subCategory).display === 'none';
+        if (isHidden) {
+          subCategory.style.display = 'block';
+          icon.classList.add('rotate-90');
+        } else {
+          subCategory.style.display = 'none';
+          icon.classList.remove('rotate-90');
+        }
+      });
 
-      $icon.setAttribute('x-on:click', 'open = ! open')
-      $icon.setAttribute(':class', '{ "rotate-90 duration-200": open }')
+      // 아이콘 추가 (링크 앞에)
+      if (skinOptions.foldableCategory) {
+        // 부모 li의 position이 relative여야 absolute 아이콘이 잘 위치함
+        if (getComputedStyle(parentLi).position === 'static') {
+          parentLi.style.position = 'relative';
+        }
+        parentLi.insertBefore(icon, parentLi.firstChild);
+      }
+    });
 
-      $subCategory.parentNode.prepend($icon)
-    },
-
-    /**
-     * Get subcategories
-     *
-     * @var {NodeListOf<HTMLElement>} $subCategories
-     */
-    get $subCategories () {
-      return this.$el.querySelectorAll('.sub_category_list')
-    },
-
-    /**
-     * Get a new icon
-     *
-     * @var {HTMLElement} $icon
-     */
-    get $icon () {
-      const icon = document.createElement('i')
-
-      icon.classList.add('fa-solid', 'fa-chevron-right')
-
-      return icon
-    }
-  })))
+    // 2. 카테고리가 아닌 링크들(예: 공지사항 등)에 대한 하이라이트 처리
+    const allLinks = document.querySelectorAll('.tt_category a');
+    allLinks.forEach(function(link) {
+      try {
+        const linkPath = new URL(link.href, window.location.origin).pathname;
+        if (currentPath === linkPath) {
+          link.classList.add('is-active');
+        }
+      } catch(e) {}
+    });
+  });
 
 style
   :postcss
@@ -92,12 +126,22 @@ style
 
         .sub_category_list {
           li {
-            @apply first:mt-4;
+            @apply first:mt-4 pl-3;
 
             .link_sub_item::before {
               @apply relative -top-0.5 mr-1 fa-chevron-right text-2xs font-bold text-h-400;
             }
           }
+        }
+        
+        /* 현재 활성 카테고리 스타일 */
+        .link_item.is-active,
+        .link_sub_item.is-active {
+          @apply text-h-blue font-semibold;
+        }
+        
+        .link_sub_item.is-active::before {
+          @apply text-h-blue;
         }
       }
     }

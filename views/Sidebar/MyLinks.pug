@@ -1,11 +1,13 @@
 li#my-links.el
-  h2.tit 링크
-  ul.links(class='flex flex-col gap-y-4')
+  //- h2.tit 링크
+  ul.links(class='flex justify-center gap-x-6')
     s_link_rep
       li.link
-        .txt(class='leading-none')
-          i.ico(class='fa-solid fa-link mr-2 text-xs')
-          a.link(
-            href='[##_link_url_##]'
-            target='_blank'
-            class='text-sm') [##_link_site_##]
+        a.link(
+          href='[##_link_url_##]'
+          target='_blank'
+          title='[##_link_site_##]'
+          class='text-h-400 hover:text-h-800 dark:hover:text-h-200 transition-colors flex items-center justify-center')
+          //- Icon Router 적용 (이미지/폰트 통합 처리)
+          div(x-data='linkIconRouter' class='flex items-center justify-center')
+            i.ico(:class='iconClass' :style='iconStyle' class='text-xl flex items-center justify-center')

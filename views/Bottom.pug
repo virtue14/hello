@@ -5,23 +5,14 @@ aside#bottom(
     button.theme.btn(@click='toggleTheme')
       span.txt 테마
       i.ico(:class="($store.app && $store.app.dark) ? 'fa-solid fa-sun' : 'fa-solid fa-moon'")
+    //- 관리자용 수정/글쓰기 버튼 (Fallback)
+    s_ad_div
+      a#admin-edit-fallback.btn(href='/manage/newpost' title='글쓰기' style='display: flex;')
+        span.txt 글쓰기
+        i.ico(class='fa-solid fa-pen')
+
     a.top.btn(href='#hELLO')
       span.txt 상단으로
       i.ico(class='fa-solid fa-chevron-up')
 
-style
-  :postcss
-    #bottom {
-      .btn {
-        @apply flex justify-center items-center w-10 h-10 p-0 rounded-full outline-0 bg-h-200 text-h-500 shadow-none hover:bg-h-300;
-        @apply dark:text-h-200 dark:bg-h-700 dark:hover:bg-h-600;
 
-        .txt {
-          @apply text-hidden;
-        }
-
-        .ico {
-          @apply text-base;
-        }
-      }
-    }

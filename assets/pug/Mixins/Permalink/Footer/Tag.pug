@@ -4,27 +4,6 @@ s_tag_label
     class='flex flex-wrap mt-1 gap-x-2 text-[0]')
     | [##_tag_label_rep_##]
 
-script.
-  document.addEventListener('alpine:init', () => Alpine.data('tag', () => ({
-    /**
-     * Init
-     */
-    init () {
-      this.removeAllCommas()
-    },
-
-    /**
-     * Remove all commas
-     */
-    removeAllCommas () {
-      for (const node of this.$el.childNodes) {
-        if (node.nodeType === 3) {
-          node.remove()
-        }
-      }
-    }
-  })))
-
 style(once='tags')
   :postcss
     #tags {

@@ -8,6 +8,19 @@
   button {
     @apply pointer-events-auto;
   }
+
+  /* Hide scrollbar but keep scroll functionality */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+  }
 }
 
 @layer components {
@@ -238,4 +251,18 @@
 .code-block-wrapper pre code ::selection {
   background-color: #3e4451;
   color: inherit;
+}
+
+/* Bottom Floating Bar */
+#bottom .btn {
+  @apply flex justify-center items-center w-10 h-10 p-0 rounded-full outline-0 bg-h-200 text-h-500 shadow-none hover:bg-h-300;
+  @apply dark:text-h-200 dark:bg-h-700 dark:hover:bg-h-600;
+}
+
+#bottom .btn .txt {
+  @apply text-hidden;
+}
+
+#bottom .btn .ico {
+  @apply text-base;
 }

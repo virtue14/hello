@@ -3,7 +3,7 @@ doctype html
 html#hELLO(
   x-data='app'
   lang='ko'
-  class='scroll-smooth')
+  class='scroll-smooth h-full overflow-hidden')
   head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width')
@@ -118,7 +118,7 @@ html#hELLO(
 
   body(
     id='[##_body_id_##]'
-    class='overflow-x-hidden bg-h-100 dark:bg-h-800')
+    class='overflow-x-hidden bg-h-100 dark:bg-h-800 h-full')
     block TIDORY
 
     script.
@@ -140,7 +140,8 @@ html#hELLO(
         }));
         
         // 소셜 링크 파싱 컴포넌트
-        Alpine.data('parseSocialLinks', () => ({
+        Alpine.data('parseSocialLinks', (description = '') => ({
+          description,
           socialLinks: [],
           
           init() {
@@ -168,6 +169,63 @@ html#hELLO(
             if (email) links.push({ url: `mailto:${email[1]}`, icon: 'fa-solid fa-envelope' });
             
             this.socialLinks = links;
+          }
+        }));
+        
+        // Tag 컴포넌트 (태그 쉼표 제거)
+        Alpine.data('tag', () => ({
+          init () {
+            this.removeAllCommas()
+          },
+          removeAllCommas () {
+            for (const node of this.$el.childNodes) {
+              if (node.nodeType === 3) {
+                node.remove()
+              }
+            }
+          }
+        }));
+
+        // 링크 아이콘 라우터 (이름 기반 아이콘 매핑)
+        Alpine.data('linkIconRouter', () => ({
+          iconClass: 'fa-solid fa-link',
+          iconStyle: '',
+          
+          init() {
+            // 부모 a 태그의 title (링크 이름) 찾기
+            const name = this.$el.closest('a').getAttribute('title') || '';
+            const result = this.getIcon(name);
+            this.iconClass = result.className;
+            this.iconStyle = result.style || '';
+          },
+          
+          getIcon(name) {
+            const n = name.toLowerCase();
+            
+            // Custom Font Awesome Icons
+            if (n.includes('밀로(millo)') || n.includes('밀로')) {
+              return { className: 'fa-solid fa-lightbulb' };  // 사이드 프로젝트 (아이디어/혁신)
+            }
+            if (n.includes('project') || n.includes('프로젝트')) {
+              return { className: 'fa-solid fa-code-branch' };  // 프로젝트 저장소 (Git 브랜치)
+            }
+
+            // Font Awesome Icons
+            if (n.includes('github')) return { className: 'fa-brands fa-github' };
+            if (n.includes('gitlab')) return { className: 'fa-brands fa-gitlab' };
+            if (n.includes('linkedin')) return { className: 'fa-brands fa-linkedin' };
+            if (n.includes('instagram')) return { className: 'fa-brands fa-instagram' };
+            if (n.includes('twitter') || n === 'x') return { className: 'fa-brands fa-x-twitter' };
+            if (n.includes('facebook')) return { className: 'fa-brands fa-facebook' };
+            if (n.includes('youtube')) return { className: 'fa-brands fa-youtube' };
+            if (n.includes('twitch')) return { className: 'fa-brands fa-twitch' };
+            if (n.includes('tiktok')) return { className: 'fa-brands fa-tiktok' };
+            if (n.includes('discord')) return { className: 'fa-brands fa-discord' };
+            if (n.includes('email') || n.includes('mail') || n.includes('메일')) return { className: 'fa-solid fa-envelope' };
+            if (n.includes('velog')) return { className: 'fa-brands fa-vimeo-v' };
+            if (n.includes('notion')) return { className: 'fa-solid fa-n' };
+            
+            return { className: 'fa-solid fa-link' };
           }
         }));
       });
@@ -202,6 +260,79 @@ html#hELLO(
           setTimeout(() => Alpine.store('app').loading = false, 100)
         }
       })))
+
+    script.
+      ;(function() {
+        function initAdminButton() {
+          // 1. 글 상세 페이지면 Fallback 버튼 링크 수정
+          if (typeof T !== 'undefined' && T.config && T.config.entryId) {
+            var btn = document.getElementById('admin-edit-fallback');
+            if (btn) {
+              btn.href = '/manage/newpost/?id=' + T.config.entryId + '&type=post';
+              btn.title = '수정';
+            }
+          }
+          
+          // 2. 티스토리 네이티브 관리 버튼(.wrap_btn_etc) 감지 및 이동
+          // MutationObserver로 비동기 로드 대응
+          if (typeof MutationObserver !== 'undefined') {
+            var observer = new MutationObserver(function(mutations, obs) {
+              var nativeBtn = document.querySelector('.wrap_btn_etc');
+              var bottomWrap = document.querySelector('#bottom .wrap');
+              var fallbackBtn = document.getElementById('admin-edit-fallback');
+              
+              if (nativeBtn && bottomWrap) {
+                // 이미 이동된 상태인지 확인 (무한 루프 방지)
+                if (bottomWrap.contains(nativeBtn)) {
+                  return;
+                }
+                
+                // Fallback 숨김
+                if (fallbackBtn) fallbackBtn.style.display = 'none';
+                
+                // 스타일 초기화 및 표시 설정 (중요: !important로 강제 노출)
+                nativeBtn.style.cssText = 'display: flex !important; align-items: center; justify-content: center; position: static; margin: 0;';
+                
+                // 아이콘 등 내부 스타일 조정이 필요할 수 있음
+                // nativeBtn 내부 button에도 스타일 적용
+                var innerBtn = nativeBtn.querySelector('button');
+                if (innerBtn) {
+                  innerBtn.style.cssText = 'width: 100%; height: 100%; padding: 0; border: none; background: none; display: flex; align-items: center; justify-content: center;';
+                }
+
+                // 플로팅 바로 이동 (테마 버튼 앞으로)
+                bottomWrap.insertBefore(nativeBtn, bottomWrap.firstChild);
+                
+                // 이동 후에는 감시 중단
+                obs.disconnect();
+              }
+            });
+            
+            observer.observe(document.body, {
+              childList: true,
+              subtree: true
+            });
+          }
+          
+          // 초기 로드 시에도 한 번 실행
+          setTimeout(function() {
+             var nativeBtn = document.querySelector('.wrap_btn_etc');
+             var bottomWrap = document.querySelector('#bottom .wrap');
+             if (nativeBtn && bottomWrap && !bottomWrap.contains(nativeBtn)) {
+               var fallbackBtn = document.getElementById('admin-edit-fallback');
+               if (fallbackBtn) fallbackBtn.style.display = 'none';
+               nativeBtn.style.cssText = 'display: flex !important; align-items: center; justify-content: center; position: static; margin: 0;';
+               bottomWrap.insertBefore(nativeBtn, bottomWrap.firstChild);
+             }
+          }, 500);
+        }
+
+        if (document.readyState === 'loading') {
+          window.addEventListener('DOMContentLoaded', initAdminButton);
+        } else {
+          initAdminButton();
+        }
+      })();
 
     script.
       window.addEventListener('DOMContentLoaded', () => Alpine.start())

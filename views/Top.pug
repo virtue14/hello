@@ -3,13 +3,20 @@ nav#global-navigation(
   class='w-full bg-h-100 dark:bg-h-800 border-b border-h-300 dark:border-h-700 mb-8'
   aria-label='주 메뉴'
 )
-  .container(class='max-w-7xl mx-auto px-4 py-3')
+  .container(class='max-w-7xl mx-auto px-4 py-3 flex items-center justify-between')
+    //- 모바일 사이드바 토글 버튼
+    button.sidebar-toggle(
+      @click='sidebar = !sidebar'
+      class='xl:hidden text-h-600 dark:text-h-400 hover:text-h-900 dark:hover:text-h-100 transition-colors'
+      aria-label='메뉴 열기/닫기')
+      i(class='fa-solid fa-bars text-xl')
+    
     //- 카테고리 메가 메뉴 (1depth 가로 배치, 2depth 호버 드롭다운)
-    nav#header-categories.category-mega-menu
+    nav#header-categories.category-mega-menu.flex-1
 
 script.
   // 카테고리 메가 메뉴 생성 (사이드바 로드 대기)
-  document.addEventListener('DOMContentLoaded', function() {
+  ;document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
       var sidebarCategory = document.querySelector('#sidebar .tt_category');
       var headerCategories = document.querySelector('#header-categories');
@@ -58,15 +65,27 @@ style
   :postcss
     #global-navigation {
       .category-mega-menu {
+        @apply overflow-visible;
+        
+        /* 스크롤바 숨기기 (모바일) */
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        
         .mega-menu-list {
-          @apply flex flex-wrap gap-4 items-center justify-center m-0 p-0;
+          @apply flex gap-4 items-center m-0 p-0;
+          @apply flex-nowrap xl:flex-wrap xl:justify-center;
+          @apply min-w-max xl:min-w-0;
+          @apply overflow-x-auto xl:overflow-visible;
         }
         
         .mega-menu-item {
-          @apply list-none relative;
+          @apply list-none relative flex-shrink-0;
           
           .mega-menu-link {
-            @apply text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100 font-medium transition-colors no-underline text-sm px-3 py-2 block;
+            @apply text-h-600 dark:text-h-300 hover:text-h-900 dark:hover:text-h-100 font-medium transition-colors no-underline text-sm px-3 py-2 block whitespace-nowrap;
           }
           
           .mega-menu-dropdown {
@@ -77,8 +96,12 @@ style
             @apply opacity-100 visible;
           }
           
+          /* 사이드바에서 복제된 sub_category_list의 hidden 스타일 초기화 */
           .sub_category_list {
             @apply m-0 p-0;
+            display: block !important;
+            height: auto !important;
+            overflow: visible !important;
             
             li {
               @apply list-none;
@@ -101,7 +124,7 @@ style
 
 
 script.
-  document.addEventListener('alpine:init', () => Alpine.data('top', () => ({
+  ;document.addEventListener('alpine:init', () => Alpine.data('top', () => ({
     /**
      * @property {boolean} open
      */
@@ -139,7 +162,7 @@ script.
   })))
 
 script.
-  document.addEventListener('alpine:init', () => Alpine.data('menuToolbar', () => ({
+  ;document.addEventListener('alpine:init', () => Alpine.data('menuToolbar', () => ({
     /**
      * Init
      */
@@ -165,7 +188,7 @@ script.
   })))
 
 script.
-  document.addEventListener('alpine:init', () => Alpine.data('subscribe', () => ({
+  ;document.addEventListener('alpine:init', () => Alpine.data('subscribe', () => ({
     /**
      * Can subscribe?
      */
@@ -175,7 +198,7 @@ script.
   })))
 
 script.
-  document.addEventListener('alpine:init', () => Alpine.data('tistoryMenubar', () => ({
+  ;document.addEventListener('alpine:init', () => Alpine.data('tistoryMenubar', () => ({
     /**
      * Init
      */

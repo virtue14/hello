@@ -1,4 +1,4 @@
-li#profile.el(class='text-center flex flex-col items-center my-4')
+li#profile.el(class='text-center flex flex-col items-center')
   img.thumb(
     src='[##_image_##]'
     width='96'
@@ -9,11 +9,11 @@ li#profile.el(class='text-center flex flex-col items-center my-4')
     a.link(
       href='[##_blog_link_##]'
       class='link_tit text-h-800 dark:text-h-200 inline-block pt-4 pb-1 font-medium') [##_title_##]
-  .blogger(class='text-h-400 text-sm mb-3') [##_blogger_##]
+  .blogger(class='text-h-400 text-sm') [##_blogger_##]
   
   //- 소셜 링크 (프로필 설명란에서 파싱)
   .social-links(class='flex gap-3 justify-center')
-    .social-link(x-data='{ description: `[##_desc_##]` }' x-init='parseSocialLinks')
+    .social-link(x-data='parseSocialLinks' :description='`[##_desc_##]`')
       template(x-for='link in socialLinks' :key='link.url')
         a(:href='link.url' target='_blank' rel='noopener noreferrer' class='text-h-500 dark:text-h-400 hover:text-h-800 dark:hover:text-h-200 transition-colors text-lg')
           i(:class='link.icon')

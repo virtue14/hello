@@ -3,7 +3,7 @@
  * Entry for bundling by webpack.
  */
 
-/* global hljs */
+/* global hljs, T */
 
 /** @see https://alpinejs.dev */
 import Alpine from 'alpinejs'
@@ -80,10 +80,105 @@ document.addEventListener('DOMContentLoaded', () => {
                 wrapper.appendChild(pre)
 
                 // hljs 하이라이팅
-                hljs.highlightAll()
+                if (!codeBlock.dataset.highlighted) {
+                    hljs.highlightElement(codeBlock)
+                    codeBlock.dataset.highlighted = 'yes'
+                }
             }
         })
     }
 })
 
-Alpine.start()
+// Alpine.start()는 app.pug에서 DOMContentLoaded 후에 호출됩니다
+// 이렇게 하면 모든 Store와 Component 정의가 먼저 등록됩니다
+
+// Admin Button Initialization
+function initAdminButton() {
+    const btn = document.getElementById('admin-edit-fallback');
+    // 버튼이 없으면(권한 없음 등) 종료
+    if (!btn) return;
+
+    const nativeBtn = document.querySelector('.wrap_btn_etc');
+
+    // 1. entryId 감지 (T.config 또는 URL)
+    let entryId = null;
+    if (typeof T !== 'undefined' && T.config && T.config.entryId) {
+        entryId = T.config.entryId;
+    } else {
+        // URL에서 글 ID 추출 (예: /123, /entry/123)
+        const match = window.location.pathname.match(/^\/(?:entry\/)?(\d+)$/);
+        if (match) {
+            entryId = match[1];
+        }
+    }
+
+    // 2. 상세 페이지 로직 (네이티브 버튼 활용 우선)
+    if (nativeBtn) {
+        // 네이티브 버튼 숨기기
+        nativeBtn.style.cssText = 'display: none !important;';
+
+        // 수정 링크 찾기
+        const editLink = nativeBtn.querySelector('a[href*="/newpost/"]');
+        if (editLink) {
+            // 수정 링크가 있으면 우리 버튼에 적용
+            btn.href = editLink.href;
+            btn.title = '수정';
+            btn.style.display = 'flex'; // 강제 표시
+
+            const txtSpan = btn.querySelector('.txt');
+            const icoSpan = btn.querySelector('.ico');
+            if (txtSpan) txtSpan.textContent = '수정';
+            if (icoSpan) {
+                icoSpan.classList.remove('fa-pen');
+                icoSpan.classList.add('fa-edit');
+            }
+        }
+    }
+    // 3. 네이티브 버튼 못 찾았지만 entryId가 있는 경우 (비상용)
+    else if (entryId) {
+        btn.href = '/manage/newpost/?id=' + entryId + '&type=post';
+        btn.title = '수정';
+        btn.style.display = 'flex'; // 강제 표시
+
+        const txtSpan = btn.querySelector('.txt');
+        if (txtSpan) txtSpan.textContent = '수정';
+        const icoSpan = btn.querySelector('.ico');
+        if (icoSpan) {
+            icoSpan.classList.remove('fa-pen');
+            icoSpan.classList.add('fa-edit');
+        }
+    }
+
+    // 4. Tistory 네이티브 버튼이 나중에 로드될 경우를 대비한 Observer
+    if (typeof MutationObserver !== 'undefined') {
+        const observer = new MutationObserver(function (mutations, obs) {
+            const lateNativeBtn = document.querySelector('.wrap_btn_etc');
+            if (lateNativeBtn) {
+                lateNativeBtn.style.cssText = 'display: none !important;'; // 네이티브 숨김
+
+                const editLink = lateNativeBtn.querySelector('a[href*="/newpost/"]');
+                if (editLink) {
+                    btn.href = editLink.href;
+                    btn.title = '수정';
+                    btn.style.display = 'flex';
+
+                    const txtSpan = btn.querySelector('.txt');
+                    const icoSpan = btn.querySelector('.ico');
+                    if (txtSpan) txtSpan.textContent = '수정';
+                    if (icoSpan) {
+                        icoSpan.classList.remove('fa-pen');
+                        icoSpan.classList.add('fa-edit');
+                    }
+                }
+                obs.disconnect();
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initAdminButton);

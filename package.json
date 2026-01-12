@@ -17,7 +17,8 @@
     "deploy": "tidory deploy",
     "store": "tidory store",
     "lint": "eslint && pug-lint .",
-    "build:portfolio": "postcss packages/portfolio/src/css -d packages/portfolio/dist"
+    "build:portfolio": "postcss packages/portfolio/src/css -d packages/portfolio/dist",
+    "predeploy": "find dist -name \".DS_Store\" -delete && rm -f dist/images/millo.png dist/images/virtue.png"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

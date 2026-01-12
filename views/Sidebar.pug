@@ -1,26 +1,43 @@
 aside#sidebar(
-  :class='sidebar ? "left-0" : "-left-[calc(theme(spacing.s))]"'
-  class='h-full fixed top-0 w-s overflow-hidden z-[9000] transition-[left] duration-200 p-0 bg-h-200 dark:bg-h-700 <s_if_var_sidebar>xl:left-0</s_if_var_sidebar>')
-  ul.wrap(class='flex flex-col gap-y-6 overflow-x-hidden overflow-y-scroll h-full w-[calc(theme(spacing.s)+theme(spacing.8))] absolute py-6 border-box')
+  :class='sidebar ? "left-0" : "-left-[calc(theme(spacing.s))] xl:hidden"'
+  class='group h-full fixed top-0 w-s overflow-visible z-[9000] transition-[left] duration-200 p-0 bg-h-200 dark:bg-h-700 xl:static xl:left-0 xl:block')
+  
+  //- 접기 버튼 (Teleport로 Body로 이동, 사이드바 열렸을 때 표시)
+  template(x-teleport='body')
+    button.sidebar-collapse-btn(
+      x-show='sidebar'
+      @click='sidebar = false'
+      class='hidden xl:flex fixed top-1/2 -translate-y-1/2 items-center justify-center rounded-r-md bg-h-200 dark:bg-h-700 text-h-500 hover:text-h-800 dark:hover:text-h-200 hover:w-10 transition-all z-[9999] shadow-md border border-l-0 border-h-300 dark:border-h-600 w-8 h-12'
+      style='left: var(--h-s, 256px)'
+      x-transition:enter='transition ease-out duration-300'
+      x-transition:enter-start='opacity-0 -translate-x-full'
+      x-transition:enter-end='opacity-100 translate-x-0'
+      aria-label='사이드바 접기'
+    )
+      i(class='fa-solid fa-chevron-left')
+
+  ul.wrap(class='flex flex-col gap-y-6 overflow-x-hidden overflow-y-scroll h-full w-[calc(theme(spacing.s)+theme(spacing.8))] py-6 border-box xl:relative no-scrollbar')
+    //- 고정 아이템 (순서 보장)
+    //- 프로필
+    include Sidebar/Profile
+    
+    //- 링크 (아이콘)
+    include Sidebar/MyLinks
+    
+    //- 방문자 수
+    include Sidebar/Counter
+    
+    //- 검색
+    include Sidebar/Search
+    
+    //- 카테고리
+    include Sidebar/Category
+    
+    //- 블로그 메뉴
+    include Sidebar/BlogMenu
+
+    //- 가변 아이템 (Tistory 관리자 설정 가능)
     s_sidebar
-      s_sidebar_element
-        // 프로필
-        include Sidebar/Profile
-      s_sidebar_element
-        // 방문자 수
-        include Sidebar/Counter
-      s_sidebar_element
-        // 검색
-        include Sidebar/Search
-      s_sidebar_element
-        // 카테고리
-        include Sidebar/Category
-      s_sidebar_element
-        // 블로그 메뉴
-        include Sidebar/BlogMenu
-      s_sidebar_element
-        // 링크
-        include Sidebar/MyLinks
       s_sidebar_element
         // 공지사항
         include Sidebar/Notice
@@ -37,6 +54,20 @@ aside#sidebar(
         // 최근 글
         include Sidebar/RecentPosts
     include Sidebar/Copyright
+
+  //- 외부 펼치기 핸들 (Teleport로 Body로 이동)
+  template(x-teleport='body')
+    button.sidebar-expand-handle(
+      x-show='!sidebar'
+      @click='sidebar = true'
+      class='hidden xl:flex fixed top-1/2 -translate-y-1/2 left-0 z-[9999] w-6 h-16 bg-h-200 dark:bg-h-700 items-center justify-center rounded-r-lg shadow-md text-h-400 hover:text-h-800 dark:hover:text-h-200 hover:w-8 transition-all duration-200 cursor-pointer border border-l-0 border-h-300 dark:border-h-600'
+      aria-label='사이드바 펼치기'
+      x-transition:enter='transition ease-out duration-300'
+      x-transition:enter-start='opacity-0 -translate-x-full'
+      x-transition:enter-end='opacity-100 translate-x-0'
+    )
+      i(class='fa-solid fa-chevron-right text-xs')
+
   template(x-teleport='body')
     #mask(
       x-show='sidebar'
@@ -47,7 +78,7 @@ aside#sidebar(
       x-transition:leave-start='opacity-100'
       x-transition:leave-end='opacity-0'
       @click='sidebar = false'
-      class='fixed top-0 left-0 w-screen h-screen bg-h-900/50 backdrop-blur z-[8000] duration-200')
+      class='fixed top-0 left-0 w-screen h-screen bg-h-900/50 backdrop-blur z-[8000] duration-200 xl:hidden')
 
 style
   :postcss
