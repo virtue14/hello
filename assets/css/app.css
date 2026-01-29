@@ -29,10 +29,17 @@
   }
 
   .permalink-container {
-    @apply w-full px-4 lg:px-0 lg:max-w-screen-lg lg:w-pem lg:mx-auto;
-    /* 본문 너비: 720px (노트북 호환) */
-    min-width: min(720px, 100%);
+    @apply w-full px-4 lg:px-0 lg:mx-auto;
+    /* 모바일/태블릿: 720px 제한 */
     max-width: min(720px, 100%);
+  }
+
+  @media (min-width: 1280px) {
+    .permalink-container {
+      /* xl: 본문(720px) + 갭(64px) + TOC(224px) = 1008px */
+      max-width: 1008px;
+      padding: 0;
+    }
   }
 
   .cover-cols-1 {

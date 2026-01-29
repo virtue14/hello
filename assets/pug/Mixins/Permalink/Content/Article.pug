@@ -408,16 +408,31 @@ style(once='article-postbtn')
               }
             }
 
-            &.wrap_btn_etc {
-              .btn_etc1::before {
-                @apply fa-wrench;
-              }
+          }
 
-              .btn_etc2::before {
-                @apply fa-ellipsis;
-              }
+          /* 비로그인 상태에서 관리 버튼 숨김 (티스토리가 로그인 시에만 표시) */
+          &.wrap_btn_etc {
+            @apply hidden;
+
+            .btn_etc1::before {
+              @apply fa-wrench;
+            }
+
+            .btn_etc2::before {
+              @apply fa-ellipsis;
             }
           }
+        }
+
+        /* 티스토리 기본 구독 버튼 숨김 (커스텀 버튼만 사용) */
+        > .btn_subscription:not([data-teleport-target]) {
+          @apply hidden;
+        }
+
+        /* 서포트 버튼 숨김 */
+        [data-tistory-react-app="SupportButton"] {
+          @apply hidden;
+        }
         }
       }
     }
