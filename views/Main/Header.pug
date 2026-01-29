@@ -10,6 +10,7 @@ template(x-if='$store.header.show')
         class='font-bold text-3xl')
       span.desc(class='font-bold text-sm') [##_title_##]
 
+
 script.
   document.addEventListener('alpine:init', () => Alpine.store('header', {
     /**
@@ -30,3 +31,4 @@ style
         @apply empty:before:content-[attr(data-empty)];
       }
     }
+

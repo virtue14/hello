@@ -6,7 +6,8 @@ block TIDORY
       x-data='{ sidebar: window.innerWidth >= 1280 }'
       class='flex flex-col xl:flex-row break-all h-full overflow-hidden')
       include views/Sidebar
-      .main-content(class='flex-1 min-w-0 xl:ml-0 h-full overflow-y-auto relative')
+      //- 노션 스타일: 사이드바 상태에 따라 메인 콘텐츠 확장
+      .main-content(class='flex-1 min-w-0 h-full overflow-y-auto relative transition-all duration-300')
         include views/Main
     include views/Indicator
     include views/Bottom

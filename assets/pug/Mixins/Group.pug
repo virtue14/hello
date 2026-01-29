@@ -40,6 +40,8 @@ style
         form {
           .tt-area-write {
             .tt_wrap_write {
+              @apply relative;
+              
               .tt-box-account {
                 @apply flex gap-x-2;
 
@@ -50,7 +52,7 @@ style
 
               .tt-box-textarea {
                 .tt-inner-g {
-                  @apply w-full overflow-hidden border-0 p-5 rounded-lg box-border bg-h-200 dark:bg-h-700;
+                  @apply w-full overflow-hidden border-0 p-5 pb-20 rounded-lg box-border bg-h-200 dark:bg-h-700;
 
                   .tt_txt_user {
                     @apply font-bold mb-3 text-h-800 dark:text-h-200 bg-h-200 dark:bg-h-700;
@@ -64,7 +66,7 @@ style
               }
 
               .tt-box-write {
-                @apply flex justify-end gap-x-2;
+                @apply absolute bottom-6 right-4 flex gap-x-2;
 
                 > div {
                   @apply flex gap-x-2;
@@ -74,13 +76,13 @@ style
                 .tt-btn-cancel,
                 .tt-btn_register,
                 .tt-btn_register:disabled {
-                  @apply bg-h-200 hover:bg-h-300 dark:bg-h-700 dark:hover:bg-h-600;
+                  @apply bg-h-300 hover:bg-h-400 dark:bg-h-600 dark:hover:bg-h-500;
                 }
 
                 .tt-xe-label,
                 .tt-btn-cancel,
                 .tt-btn_register {
-                  @apply m-0 p-0 w-10 h-10 min-w-max rounded-lg flex justify-center items-center text-[0] outline-0 border-0;
+                  @apply m-0 p-0 w-9 h-9 min-w-max rounded-lg flex justify-center items-center text-[0] outline-0 border-0;
                 }
 
                 .tt-xe-input-helper,

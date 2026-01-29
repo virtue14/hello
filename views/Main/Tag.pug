@@ -1,40 +1,42 @@
 s_tag
-  section#tag(
-    x-data='tag'
-    class='index-container')
+  //- 전체를 하나의 x-data='tag' 컴포넌트로 감싸기
+  div#tag(x-data='tag')
     script.
       document.addEventListener('alpine:init', () => {
         Alpine.store('header').title = 'Tags'
+        Alpine.store('header').show = false  // 기본 헤더 숨기기
       })
 
-    //- 카카오테크 스타일 제목 & 설명
-    article.content-article(class='mb-8')
-      h2.tit_content(class='text-4xl font-bold text-center text-h-700 dark:text-h-200 mb-4') Tags
-      p.desc_content(class='text-center text-h-500 dark:text-h-400 mb-8') 블로그의 모든 글들을 태그로 쉽게 찾아볼 수 있습니다.
+    //- 커스텀 헤더 (설명과 검색창 포함)
+    header#global-header(class='mb-10 lg:mb-16')
+      .info(class='border-b border-solid border-b-h-300 dark:border-b-h-600 h-h min-h-[theme(spacing.h)] flex flex-col justify-center items-center text-center gap-y-1 text-h-800 dark:text-h-200')
+        .tit(class='font-bold text-3xl') Tags
 
-    //- 검색 입력 필드 & 카운터
-    .search-container(class='mb-6 px-1 flex flex-col sm:flex-row items-center justify-between gap-4')
-      input.search-input(
-        type='text'
-        x-model='search'
-        @input='filterTags()'
-        placeholder='태그 검색...'
-        class='w-full sm:w-auto flex-1 px-4 py-3 rounded-lg bg-h-200 dark:bg-h-700 text-h-500 dark:text-h-200 focus:outline-none focus:ring-2 focus:ring-h-400 placeholder-h-400 dark:placeholder-h-500 transition-colors'
-      )
+        //- 설명
+        p.desc(class='text-h-500 dark:text-h-400 mt-4 mb-6') 블로그의 모든 글들을 태그로 쉽게 찾아볼 수 있습니다.
 
-      div.count(
-        x-show='total > 0'
-        class='text-sm font-medium text-h-400 dark:text-h-500 whitespace-nowrap'
-      )
-        span(x-text='count')
-        span.mx-1 /
-        span(x-text='total')
+        //- 검색 입력 필드 & 카운터
+        .search-container(class='w-full max-w-md flex flex-col sm:flex-row items-center justify-between gap-4')
+          input.search-input(
+            type='text'
+            x-model='search'
+            @input='filterTags()'
+            placeholder='태그 검색...'
+            class='w-full sm:w-auto flex-1 px-4 py-3 rounded-lg bg-h-200 dark:bg-h-700 text-h-500 dark:text-h-200 focus:outline-none focus:ring-2 focus:ring-h-400 placeholder-h-400 dark:placeholder-h-500 transition-colors'
+          )
 
+          div.count(
+            x-show='total > 0'
+            class='text-sm font-medium text-h-400 dark:text-h-500 whitespace-nowrap'
+          )
+            span(x-text='count')
+            span.mx-1 /
+            span(x-text='total')
 
-    ul.tags(class='flex flex-wrap gap-3')
+    //- 태그 목록
+    ul.tags(class='index-container flex flex-wrap gap-3')
       s_tag_rep
         li.tag
           a.link(
             href='[##_tag_link_##]'
             class='inline-block px-3 py-1.5 text-sm border border-h-300 dark:border-h-600 rounded-full text-h-600 hover:text-h-800 hover:border-h-500 dark:text-h-300 dark:hover:text-h-100 dark:hover:border-h-400 transition-colors') [##_tag_name_##]
-

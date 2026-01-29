@@ -1,6 +1,7 @@
+//- 노션 스타일 사이드바: 닫으면 완전 숨김 + 메인 콘텐츠 확장
 aside#sidebar(
-  :class='sidebar ? "left-0" : "-left-[calc(theme(spacing.s))] xl:hidden"'
-  class='group h-full fixed top-0 w-s overflow-visible z-[9000] transition-[left] duration-200 p-0 bg-h-200 dark:bg-h-700 xl:static xl:left-0 xl:block')
+  :class='sidebar ? "left-0 w-s" : "-left-full xl:w-0 xl:overflow-hidden"'
+  class='group h-full fixed top-0 overflow-hidden z-[9000] transition-all duration-300 p-0 bg-h-200 dark:bg-h-700 xl:relative xl:left-0')
   
   //- 접기 버튼 (Teleport로 Body로 이동, 사이드바 열렸을 때 표시)
   template(x-teleport='body')
@@ -17,11 +18,12 @@ aside#sidebar(
       i(class='fa-solid fa-chevron-left')
 
   ul.wrap(class='flex flex-col gap-y-6 overflow-x-hidden overflow-y-scroll h-full w-[calc(theme(spacing.s)+theme(spacing.8))] py-6 border-box xl:relative no-scrollbar')
-    //- 고정 아이템 (순서 보장)
+    //- 고정 아이템 (사용자 요청: 프로필 - 링크 - 방문자수 - 검색 - 카테고리 만 유지)
+    
     //- 프로필
     include Sidebar/Profile
     
-    //- 링크 (아이콘)
+    //- 링크
     include Sidebar/MyLinks
     
     //- 방문자 수
@@ -33,10 +35,7 @@ aside#sidebar(
     //- 카테고리
     include Sidebar/Category
     
-    //- 블로그 메뉴
-    include Sidebar/BlogMenu
-
-    //- 가변 아이템 (Tistory 관리자 설정 가능)
+    //- 가변 아이템 (티스토리 관리자 페이지에서 설정 가능)
     s_sidebar
       s_sidebar_element
         // 공지사항
@@ -53,6 +52,7 @@ aside#sidebar(
       s_sidebar_element
         // 최근 글
         include Sidebar/RecentPosts
+    
     include Sidebar/Copyright
 
   //- 외부 펼치기 핸들 (Teleport로 Body로 이동)

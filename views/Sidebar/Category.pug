@@ -3,62 +3,291 @@ li#category.el(x-data='category')
 
 script.
   document.addEventListener('DOMContentLoaded', function() {
-    // 1. 카테고리 펼침/접기 및 하이라이트 로직
-    const subCategories = document.querySelectorAll('.tt_category .sub_category_list');
-    const currentPath = window.location.pathname;
+    // URL 정규화 헬퍼 함수
+    function normalizePath(path) {
+      try {
+        return decodeURIComponent(path).normalize('NFC').replace(/\/$/, '').trim();
+      } catch (e) {
+        return path;
+      }
+    }
 
-    subCategories.forEach(function(subCategory) {
-      const parentLi = subCategory.parentElement;
-      const links = subCategory.querySelectorAll('a');
-      let isActive = false;
+    // 아이콘 매핑 정의
+    const iconMap = {
+      // Mark Up
+      'mark up': 'fa-solid fa-code',
+      'html': 'devicon-html5-plain',
+      'markdown': 'devicon-markdown-original',
+      'bbcode': 'fa-solid fa-brackets-curly', // or brackets
+      
+      // Style Sheet
+      'style sheet': 'fa-solid fa-palette',
+      'css': 'devicon-css3-plain',
+      'sass': 'devicon-sass-original',
+      'bootstrap5': 'devicon-bootstrap-plain',
+      '스타일 요소 모음': 'fa-solid fa-brush',
+      
+      // Language
+      'language': 'fa-brands fa-codepen',
+      'c': 'devicon-c-plain',
+      'java (jvm)': 'devicon-java-plain', // Long key first if needed
+      'java': 'devicon-java-plain',
+      'javascript (web)': 'devicon-javascript-plain',
+      'javascript': 'devicon-javascript-plain',
+      'typescript': 'devicon-typescript-plain',
+      'python': 'devicon-python-plain',
+      'php': 'devicon-php-plain',
+      
+      // Library
+      'library': 'fa-solid fa-book',
+      'jquery': 'devicon-jquery-plain',
+      'lodash': 'fa-solid fa-code', // Fallback for complex svg
+      'js 라이브러리 모음': 'fa-solid fa-book-open',
+      
+      // Snippet
+      'snippet': 'fa-solid fa-rocket',
+      'css 스니펫': 'fa-solid fa-puzzle-piece',
+      'js 스니펫': 'fa-solid fa-puzzle-piece',
+      'java 스니펫': 'fa-solid fa-puzzle-piece',
+      
+      // Framework
+      'framework': 'fa-solid fa-layer-group',
+      'node.js': 'devicon-nodejs-plain',
+      'node': 'devicon-nodejs-plain',
+      'express': 'devicon-express-original',
+      'pug': 'fa-solid fa-dog', // Fallback
+      'nunjucks': 'fa-solid fa-file-code',
+      'sequelize': 'devicon-sequelize-plain',
+      'mongoose': 'fa-solid fa-database', // Fallback
+      'passport': 'fa-solid fa-id-card',
+      'socket.io': 'devicon-socketio-original',
+      'node security': 'fa-solid fa-shield-halved',
+      'node package': 'devicon-npm-original-wordmark',
+      'nest.js': 'devicon-nestjs-plain',
+      'spring': 'devicon-spring-plain',
+      
+      // DATA
+      'data': 'fa-solid fa-database',
+      'files': 'fa-solid fa-file-code',
+      'csv': 'fa-solid fa-file-csv',
+      'xml': 'fa-solid fa-file-code',
+      'json': 'fa-solid fa-file-code',
+      'yaml': 'fa-solid fa-file-code',
+      'dbms': 'fa-solid fa-database',
+      '데이터베이스 이론': 'fa-solid fa-database',
+      'mysql': 'devicon-mysql-plain',
+      'mongodb': 'devicon-mongodb-plain',
+      'redis': 'devicon-redis-plain',
+      
+      // DevOps
+      'devops': 'fa-solid fa-server',
+      'os': 'fa-solid fa-computer',
+      'window': 'fa-brands fa-windows',
+      'linux': 'fa-brands fa-linux',
+      'server': 'fa-solid fa-server',
+      'apache': 'devicon-apache-plain',
+      'tomcat': 'devicon-tomcat-line',
+      'jetty': 'fa-solid fa-server',
+      'git': 'devicon-git-plain',
+      'ci & cd': 'fa-solid fa-rotate',
+      'jenkins': 'devicon-jenkins-line',
+      
+      // Cloud
+      'cloud': 'fa-solid fa-cloud',
+      'amazon cloud': 'fa-brands fa-aws',
+      'aws': 'devicon-amazonwebservices-plain-wordmark',
+      'aws-sdk': 'fa-brands fa-aws',
+      'ec2': 'fa-solid fa-server',
+      's3': 'fa-solid fa-box-archive',
+      'lambda': 'fa-solid fa-microchip',
+      'rds': 'fa-solid fa-database',
+      
+      // Knowledge
+      'knowledge': 'fa-solid fa-book-open',
+      '자료구조': 'fa-solid fa-sitemap',
+      '알고리즘': 'fa-solid fa-clock',
+      '디자인 패턴': 'fa-solid fa-pen-ruler',
+      'oop': 'fa-solid fa-cubes',
+      'gof': 'fa-solid fa-meteor',
+      'arch': 'fa-solid fa-landmark',
+      '개발 지식': 'fa-solid fa-brain',
+      'web 지식': 'fa-solid fa-globe',
+      'http 지식': 'fa-solid fa-paper-plane',
+      'network 지식': 'fa-solid fa-network-wired',
+      'cs 지식': 'fa-solid fa-microchip',
+      
+      // Dev Kit / Tools
+      'ide': 'fa-solid fa-window-maximize',
+      'vscode': 'devicon-vscode-plain',
+      'intellij': 'devicon-intellij-plain',
+      'tool': 'fa-solid fa-toolbox',
+      'virtualbox': 'fa-solid fa-box-open',
+      'chrome devtools': 'fa-brands fa-chrome',
+      '유용한 개발 툴': 'fa-solid fa-wrench',
+      '유용한 온라인 툴': 'fa-solid fa-globe',
+      '유용한 프로그램': 'fa-solid fa-desktop',
+      
+      // TEST
+      'testing': 'fa-solid fa-vial',
+      'selenium': 'fa-solid fa-check-double',
+      'postman': 'fa-solid fa-paper-plane',
+      'jest': 'devicon-jest-plain',
+      'artillery': 'fa-solid fa-bomb',
+      
+      // Error
+      'error 모음': 'fa-solid fa-triangle-exclamation',
+      'node.err': 'fa-solid fa-bug',
+      'js.err': 'fa-solid fa-bug',
+      'git.err': 'fa-solid fa-bug',
+      
+      // ETC
+      '깜지': 'fa-solid fa-note-sticky',
+      '일상': 'fa-solid fa-address-book',
+      'etc': 'fa-solid fa-ellipsis',
+      'etc.': 'fa-solid fa-ellipsis',
+      '기타': 'fa-solid fa-ellipsis',
+      
+      'default': 'fa-solid fa-hashtag' // 기본 아이콘
+    };
 
-      // 현재 URL이 서브 카테고리 내에 있는지 확인
-      links.forEach(function(link) {
-        try {
-          const linkPath = new URL(link.href, window.location.origin).pathname;
-          if (currentPath === linkPath) {
-            isActive = true;
-            link.classList.add('is-active');
-          }
-        } catch (e) {}
-      });
-
-      // 부모 카테고리 링크도 확인
-      const parentLink = parentLi.querySelector(':scope > .link_item');
-      if (parentLink) {
-        try {
-          const parentPath = new URL(parentLink.href, window.location.origin).pathname;
-          if (currentPath === parentPath) {
-            isActive = true;
-            parentLink.classList.add('is-active');
-          }
-        } catch (e) {}
+    function getIconClass(text) {
+      const lower = text.toLowerCase().trim();
+      
+      // 1. 정확히 일치하는 키 먼저 확인
+      if (iconMap[lower]) {
+        return iconMap[lower];
       }
       
-      // 아이콘 생성
-      const icon = document.createElement('i');
-      // z-index: 20, padding: 10px (모바일 터치 영역 확보), pointer-events: auto
-      icon.className = 'fa-solid fa-chevron-right absolute right-0 text-2xs cursor-pointer leading-5 transition-transform duration-200';
-      icon.style.cssText = 'top: 0; padding: 10px; z-index: 20; color: #999;'; 
-
-      // 초기 상태 설정
-      if (isActive) {
-        // 활성 상태면 펼침
-        subCategory.style.display = 'block';
-        icon.classList.add('rotate-90');
-      } else {
-        // 비활성 상태면 접음 (옵션에 따라 다를 수 있으나 기본적으로 접음)
-        if (skinOptions.foldableCategory) {
-          subCategory.style.display = 'none';
-        } else {
-           icon.classList.add('rotate-90'); // 접기 기능 끄면 항상 펼침 표시
+      // 2. 긴 키워드부터 부분 일치 검색 (짧은 키가 먼저 매칭되는 것 방지)
+      const sortedKeys = Object.keys(iconMap)
+        .filter(k => k !== 'default')
+        .sort((a, b) => b.length - a.length);
+      
+      for (const key of sortedKeys) {
+        if (lower.includes(key)) {
+          return iconMap[key];
         }
       }
+      return iconMap['default'];
+    }
 
-      // 클릭 이벤트 핸들러 (아이콘)
+    // 1. 카테고리 펼침/접기 및 하이라이트 로직
+    const subCategories = document.querySelectorAll('.tt_category .sub_category_list');
+    const currentPath = normalizePath(window.location.pathname);
+    
+    // 게시물 페이지용 카테고리 링크 찾기 (가장 긴 경로 우선 - 소분류 매칭 위해)
+    let articleCategoryPath = '';
+    const categorySelectors = [
+      'header#header a.category',
+      '.desc a.category',
+      '#entry a.category',
+      'article a[href*="/category/"]', 
+      '.tit_category a', 
+      '#content .category a',
+      '.article_content .category'
+    ];
+    
+    let candidatePaths = [];
+    categorySelectors.forEach(function(selector) {
+      const els = document.querySelectorAll(selector);
+      els.forEach(function(el) {
+        if (el.tagName === 'A' && el.href && el.href.includes('/category/')) {
+           try {
+             // 쿼리스트링 제거하고 패스만 추출
+             const p = normalizePath(new URL(el.href, window.location.origin).pathname);
+             candidatePaths.push(p);
+           } catch(e) {}
+        }
+      });
+    });
+
+    // 경로 길이가 가장 긴 것을 선택 (대분류 vs 대분류/소분류 중 소분류 선택)
+    if (candidatePaths.length > 0) {
+      articleCategoryPath = candidatePaths.reduce(function(a, b) { return a.length > b.length ? a : b; });
+      console.log('[Sidebar] Candidates:', candidatePaths);
+      console.log('[Sidebar] Selected:', articleCategoryPath);
+    } else {
+      console.log('[Sidebar] No category candidates found from article.');
+    }
+
+    // 모든 카테고리 링크 스캔 (서브카테고리 루프보다 전체 링크 루프가 더 포괄적임)
+    const allCategoryLinks = document.querySelectorAll('.tt_category a');
+    
+    allCategoryLinks.forEach(function(link) {
+      let isActive = false;
+      try {
+        const linkPath = normalizePath(new URL(link.href, window.location.origin).pathname);
+        // 현재 URL 또는 게시물 카테고리와 일치 여부 확인
+        if (currentPath === linkPath || (articleCategoryPath && articleCategoryPath === linkPath)) {
+          isActive = true;
+          link.classList.add('is-active');
+          
+          // 상위 카테고리들을 모두 찾아서 펼치기 (재귀적)
+          let parent = link.parentElement;
+          while (parent) {
+            if (parent.classList.contains('sub_category_list')) {
+              parent.style.display = 'block';
+              
+              // 부모 링크 활성화
+              const parentLi = parent.parentElement;
+              const parentLink = parentLi.querySelector(':scope > a');
+              if (parentLink) parentLink.classList.add('is-active');
+              
+              // 아이콘 회전 처리
+              const icon = parentLi.querySelector('.fa-chevron-right.collapse-icon');
+              if (icon) icon.classList.add('rotate-90');
+            }
+            
+            // 최상위 도달 시 중단
+            if (parent.classList.contains('tt_category')) break;
+            parent = parent.parentElement;
+          }
+        }
+      } catch (e) {}
+
+      // 아이콘 삽입 (서브 카테고리 아이템인 경우)
+      if (link.classList.contains('link_sub_item')) {
+         // 텍스트 추출 (카운트 제외)
+         // link 내부 구조: 텍스트 노드 + span.c_cnt
+         // childNodes를 순회하여 텍스트만 가져옴
+         let text = '';
+         link.childNodes.forEach(n => {
+           if (n.nodeType === 3) text += n.textContent;
+         });
+         text = text.trim();
+         
+         const iconClass = getIconClass(text);
+         
+         // 기존 아이콘이 없다면 추가
+         if (!link.querySelector('.category-icon')) {
+           const i = document.createElement('i');
+           i.className = `${iconClass} category-icon text-sm w-5 text-center text-h-400`;
+           link.prepend(i);
+         }
+      }
+    });
+
+    // 아이콘 초기화
+    subCategories.forEach(function(subCategory) {
+      const parentLi = subCategory.parentElement;
+      
+      // 이미 아이콘이 있으면 건너뜀
+      if (parentLi.querySelector('.collapse-icon')) return;
+      
+      const icon = document.createElement('i');
+      icon.className = 'fa-solid fa-chevron-right collapse-icon absolute right-0 text-2xs cursor-pointer leading-5 transition-transform duration-200';
+      icon.style.cssText = 'top: 0; padding: 0 10px; z-index: 20; color: #999;'; 
+      
+      // 상태에 따라 회전 (이미 위 로직에서 style.display=block 및 아이콘 회전을 처리했을 수 없음 - 아이콘이 아직 없으므로)
+      // 따라서 아이콘 생성 후 상태 동기화 필요
+      if (subCategory.style.display === 'block') {
+         icon.classList.add('rotate-90');
+      }
+
+      // 클릭 이벤트 핸들러
       icon.addEventListener('click', function(e) {
         e.preventDefault();
-        e.stopPropagation(); // 부모 링크 클릭 방지
+        e.stopPropagation();
         
         const isHidden = getComputedStyle(subCategory).display === 'none';
         if (isHidden) {
@@ -70,25 +299,13 @@ script.
         }
       });
 
-      // 아이콘 추가 (링크 앞에)
+      // 아이콘 추가
       if (skinOptions.foldableCategory) {
-        // 부모 li의 position이 relative여야 absolute 아이콘이 잘 위치함
         if (getComputedStyle(parentLi).position === 'static') {
           parentLi.style.position = 'relative';
         }
         parentLi.insertBefore(icon, parentLi.firstChild);
       }
-    });
-
-    // 2. 카테고리가 아닌 링크들(예: 공지사항 등)에 대한 하이라이트 처리
-    const allLinks = document.querySelectorAll('.tt_category a');
-    allLinks.forEach(function(link) {
-      try {
-        const linkPath = new URL(link.href, window.location.origin).pathname;
-        if (currentPath === linkPath) {
-          link.classList.add('is-active');
-        }
-      } catch(e) {}
     });
   });
 
@@ -116,20 +333,22 @@ style
           @apply flex flex-col gap-y-4 text-sm;
 
           li {
-            @apply relative pr-5;
+            @apply relative pr-5 mb-1; /* 간격 증가: mb-1 추가 */
 
-            i {
+            i.collapse-icon {
               @apply absolute right-0 text-2xs cursor-pointer leading-5;
+              top: 2px; /* 텍스트와 수직 정렬 */
             }
           }
         }
 
         .sub_category_list {
           li {
-            @apply first:mt-4 pl-6;
+            @apply first:mt-4 pl-6 mb-3; /* 서브 카테고리 행간: mb-3 */
 
-            .link_sub_item::before {
-              @apply relative -top-0.5 mr-1 fa-chevron-right text-2xs font-bold text-h-400;
+            /* 기존 ::before 아이콘 제거 (JS로 대체) */
+            .link_sub_item {
+                @apply flex items-center gap-x-2; /* 아이콘과 텍스트 정렬 */
             }
           }
         }

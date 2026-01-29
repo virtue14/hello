@@ -34,11 +34,41 @@ style(once='article')
           @apply text-base lg:text-lg;
         }
 
-        ol[data-ke-list-type],
+        ol[data-ke-list-type] {
+          @apply flex flex-col gap-y-3 pl-0 my-5;
+          list-style: none !important;
+          counter-reset: step-counter;
+          
+          > li {
+            @apply relative pl-10;
+            list-style: none !important;
+            counter-increment: step-counter;
+            
+            &::before {
+              @apply absolute left-0 top-0.5 w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center;
+              @apply bg-h-blue text-h-100;
+              content: counter(step-counter);
+            }
+          }
+          
+          ol[data-ke-list-type] {
+            @apply my-2 ml-0;
+            counter-reset: nested-counter;
+            
+            > li {
+              counter-increment: nested-counter;
+              
+              &::before {
+                @apply bg-h-300 dark:bg-h-600 text-h-600 dark:text-h-200 w-5 h-5 text-2xs;
+                content: counter(nested-counter);
+              }
+            }
+          }
+        }
+        
         ul[data-ke-list-type] {
           @apply flex flex-col gap-y-1 pl-[1.1rem] my-5;
 
-          ol[data-ke-list-type],
           ul[data-ke-list-type] {
             @apply my-0 ml-6;
           }
@@ -191,6 +221,121 @@ style(once='article')
           }
         }
 
+        /* GitHub 스타일 Alerts - 사용법: <div class="alert alert-note">내용</div> */
+        .alert {
+          @apply p-4 my-5 rounded-md border-l-4 text-sm leading-relaxed;
+          
+          .alert-title {
+            @apply flex items-center gap-2 font-bold mb-2;
+            
+            i {
+              @apply text-base leading-none;
+            }
+          }
+          
+          p {
+            @apply m-0;
+          }
+          
+          a {
+            text-decoration: underline;
+          }
+          
+          code {
+            @apply px-1.5 py-0.5 rounded text-xs;
+          }
+          
+          /* NOTE - 파란색 */
+          &.alert-note {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+            color: #1e40af;
+            
+            .alert-title {
+              color: #3b82f6;
+              
+              i { color: #3b82f6; }
+            }
+            
+            code {
+              background-color: rgba(59, 130, 246, 0.2);
+              color: #1e40af;
+            }
+          }
+          
+          /* TIP - 초록색 */
+          &.alert-tip {
+            background-color: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+            color: #166534;
+            
+            .alert-title {
+              color: #22c55e;
+              
+              i { color: #22c55e; }
+            }
+            
+            code {
+              background-color: rgba(34, 197, 94, 0.2);
+              color: #166534;
+            }
+          }
+          
+          /* IMPORTANT - 보라색 */
+          &.alert-important {
+            background-color: rgba(168, 85, 247, 0.1);
+            border-color: #a855f7;
+            color: #6b21a8;
+            
+            .alert-title {
+              color: #a855f7;
+              
+              i { color: #a855f7; }
+            }
+            
+            code {
+              background-color: rgba(168, 85, 247, 0.2);
+              color: #6b21a8;
+            }
+          }
+          
+          /* WARNING - 노란색 */
+          &.alert-warning {
+            background-color: rgba(234, 179, 8, 0.1);
+            border-color: #eab308;
+            color: #854d0e;
+            
+            .alert-title {
+              color: #eab308;
+              
+              i { color: #eab308; }
+            }
+            
+            code {
+              background-color: rgba(234, 179, 8, 0.2);
+              color: #854d0e;
+            }
+          }
+          
+          /* CAUTION - 빨간색 */
+          &.alert-caution {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #991b1b;
+            
+            .alert-title {
+              color: #ef4444;
+              
+              i { color: #ef4444; }
+            }
+            
+            code {
+              background-color: rgba(239, 68, 68, 0.2);
+              color: #991b1b;
+            }
+          }
+        }
+
         pre {
           code {
             @apply rounded-md p-4 text-sm leading-relaxed;
@@ -315,3 +460,60 @@ style(once='article-tistory-layer')
         @apply text-h-400 dark:text-h-300 no-underline;
       }
     }
+
+script(once='github-alerts').
+  // GitHub 스타일 Alerts 자동 변환
+  // blockquote 또는 p에 [!NOTE], [!TIP], [!IMPORTANT], [!WARNING], [!CAUTION]으로 시작하면 자동 변환
+  document.addEventListener('DOMContentLoaded', function() {
+    const alertTypes = {
+      'NOTE': { class: 'alert-note', title: 'NOTE', icon: 'fa-circle-info' },
+      'TIP': { class: 'alert-tip', title: 'TIP', icon: 'fa-lightbulb' },
+      'IMPORTANT': { class: 'alert-important', title: 'IMPORTANT', icon: 'fa-circle-exclamation' },
+      'WARNING': { class: 'alert-warning', title: 'WARNING', icon: 'fa-triangle-exclamation' },
+      'CAUTION': { class: 'alert-caution', title: 'CAUTION', icon: 'fa-octagon-xmark' }
+    };
+    
+    const contentArea = document.querySelector('.contents_style');
+    if (!contentArea) return;
+    
+    // 변환 함수
+    function convertToAlert(element) {
+      const text = element.textContent.trim();
+      const match = text.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
+      
+      if (match) {
+        const type = match[1].toUpperCase();
+        const config = alertTypes[type];
+        
+        // Alert div 생성
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert ' + config.class;
+        
+        // 제목 생성
+        const titleP = document.createElement('p');
+        titleP.className = 'alert-title';
+        titleP.innerHTML = '<i class="fa-solid ' + config.icon + '"></i> ' + config.title;
+        alertDiv.appendChild(titleP);
+        
+        // 내용 처리 - [!TYPE] 제거 후 나머지 내용 (br 태그 유지)
+        let contentHtml = element.innerHTML;
+        contentHtml = contentHtml.replace(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(<br\s*\/?>)?/i, '');
+        if (contentHtml.trim()) {
+          const contentP = document.createElement('p');
+          contentP.innerHTML = contentHtml;
+          alertDiv.appendChild(contentP);
+        }
+        
+        // 원본 요소를 alert div로 교체
+        element.parentNode.replaceChild(alertDiv, element);
+        return true;
+      }
+      return false;
+    }
+    
+    // blockquote 처리
+    contentArea.querySelectorAll('blockquote').forEach(convertToAlert);
+    
+    // p 태그 처리 (직접 자식만)
+    contentArea.querySelectorAll('p').forEach(convertToAlert);
+  });

@@ -3,16 +3,24 @@ nav#global-navigation(
   class='w-full bg-h-100 dark:bg-h-800 border-b border-h-300 dark:border-h-700 mb-8'
   aria-label='주 메뉴'
 )
-  .container(class='max-w-7xl mx-auto px-4 py-3 flex items-center justify-between')
+  .container(class='max-w-7xl mx-auto px-4 py-3 flex items-center')
     //- 모바일 사이드바 토글 버튼
     button.sidebar-toggle(
       @click='sidebar = !sidebar'
-      class='xl:hidden text-h-600 dark:text-h-400 hover:text-h-900 dark:hover:text-h-100 transition-colors'
+      class='xl:hidden mr-4 flex-shrink-0 text-h-600 dark:text-h-400 hover:text-h-900 dark:hover:text-h-100 transition-colors'
       aria-label='메뉴 열기/닫기')
       i(class='fa-solid fa-bars text-xl')
     
     //- 카테고리 메가 메뉴 (1depth 가로 배치, 2depth 호버 드롭다운)
-    nav#header-categories.category-mega-menu.flex-1
+    nav#header-categories.category-mega-menu(class='flex-1 min-w-0 overflow-x-auto')
+    
+    //- 테마 토글 버튼 (우측 고정)
+    button.theme-toggle(
+      x-data='bottom'
+      @click='toggleTheme'
+      class='ml-4 flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full text-h-600 dark:text-h-400 hover:bg-h-200 dark:hover:bg-h-700 hover:text-h-900 dark:hover:text-h-100 transition-colors'
+      aria-label='테마 변경')
+      i(:class="($store.app && $store.app.dark) ? 'fa-solid fa-sun text-lg' : 'fa-solid fa-moon text-lg'")
 
 script.
   // 카테고리 메가 메뉴 생성 (사이드바 로드 대기)
@@ -65,7 +73,7 @@ style
   :postcss
     #global-navigation {
       .category-mega-menu {
-        @apply overflow-visible;
+        @apply overflow-x-auto xl:overflow-visible;
         
         /* 스크롤바 숨기기 (모바일) */
         &::-webkit-scrollbar {
@@ -79,6 +87,13 @@ style
           @apply flex-nowrap xl:flex-wrap xl:justify-center;
           @apply min-w-max xl:min-w-0;
           @apply overflow-x-auto xl:overflow-visible;
+          
+          /* 스크롤바 숨기기 */
+          &::-webkit-scrollbar {
+            display: none;
+          }
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
         
         .mega-menu-item {
