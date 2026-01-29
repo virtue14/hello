@@ -8,6 +8,7 @@ if process.env.NODE_ENV !== 'development'
       :data-blog-id='T.config.BLOG.id'
       :data-url='TistoryBlog.tistoryUrl'
       data-device='web_pc')
+      i.fa-solid.fa-bell.subscription-icon
       em.txt_state 구독하기
       strong.txt_tool_id hELLO.
       span.img_common_tistory.ico_check_type1
@@ -17,7 +18,11 @@ style(once='content-subscription-button')
     #article {
       .container_postbtn {
         .btn_subscription {
-          @apply before:fa-star before:font-bold before:text-sm;
+          @apply flex items-center gap-x-1;
+
+          .subscription-icon {
+            @apply text-sm;
+          }
 
           .txt_state {
             @apply text-hidden;

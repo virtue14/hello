@@ -32,6 +32,7 @@
   "dependencies": {
     "@alpinejs/collapse": "^3.14.5",
     "@alpinejs/intersect": "^3.14.5",
+    "@tailwindcss/typography": "^0.5.19",
     "alpinejs": "^3.14.5",
     "highlight.js": "^11.10.0",
     "highlightjs-copy": "^1.0.6",

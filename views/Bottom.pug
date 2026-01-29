@@ -2,12 +2,16 @@ aside#bottom(
   x-data='bottom'
   class='flex justify-end px-4 w-full box-border fixed text-sm z-[9500] bottom-6 <s_if_var_sidebar>xl:w-c</s_if_var_sidebar>')
   .wrap(class='flex gap-x-2.5')
-    //- 관리자용 글쓰기 버튼
-    a#admin-edit-fallback.btn(href='/manage/newpost' title='글쓰기' style='display: flex;')
-      span.txt 글쓰기
-      i.ico(class='fa-solid fa-pen')
+    //- 관리자용 글쓰기 버튼 (게시글 페이지에서 숨김)
+    s_not_guest
+      a#admin-edit-fallback.btn.bottom-write-btn(href='/manage/newpost' title='글쓰기')
+        span.txt 글쓰기
+        i.ico(class='fa-solid fa-pen')
 
-    a.top.btn(href='#hELLO')
-      span.txt 상단으로
-      i.ico(class='fa-solid fa-chevron-up')
-
+style(once='bottom-style')
+  :postcss
+    /* 게시글 페이지에서 하단 글쓰기 버튼 숨김 */
+    .permalink-container ~ #bottom .bottom-write-btn,
+    #article ~ #bottom .bottom-write-btn {
+      @apply hidden;
+    }

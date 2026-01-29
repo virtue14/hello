@@ -58,7 +58,65 @@ module.exports = {
           '"Source Code Pro"',
           ...defaultTheme.fontFamily.mono
         ]
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: 'none',
+            color: 'inherit',
+            a: { color: '#5db0d7', textDecoration: 'none' },
+            'h1, h3, h4, h5, h6': { color: 'inherit', fontWeight: '700', borderBottom: 'none' },
+            h2: { marginTop: '2rem', borderBottom: '1px solid #e6e6e9', paddingBottom: '0.5rem' },
+            h3: { marginTop: '1.5rem' },
+            strong: { color: 'inherit' },
+            code: { color: '#5db0d7', backgroundColor: '#f4f4f6', padding: '0.2rem 0.4rem', borderRadius: '0.25rem' },
+            'code::before': { content: 'none' },
+            'code::after': { content: 'none' },
+            pre: { backgroundColor: '#282c34' },
+            blockquote: { borderLeftColor: '#5db0d7', color: 'inherit' },
+            'ul > li::marker': { color: '#5db0d7' },
+            'ol > li::marker': { color: '#5db0d7' },
+            table: {
+              width: '100%',
+              borderCollapse: 'collapse',
+              borderRadius: '0.5rem',
+              overflow: 'hidden',
+              border: '1px solid #e6e6e9'
+            },
+            thead: { backgroundColor: '#f4f4f6' },
+            th: {
+              padding: '0.75rem 1rem',
+              textAlign: 'left',
+              fontWeight: '600',
+              borderBottom: '2px solid #e6e6e9',
+              borderRight: '1px solid #e6e6e9'
+            },
+            'th:last-child': { borderRight: 'none' },
+            td: {
+              padding: '0.75rem 1rem',
+              borderBottom: '1px solid #e6e6e9',
+              borderRight: '1px solid #e6e6e9'
+            },
+            'td:last-child': { borderRight: 'none' },
+            'tbody tr:hover': { backgroundColor: '#fafafa' },
+            'tbody tr:last-child td': { borderBottom: 'none' }
+          }
+        },
+        invert: {
+          css: {
+            h2: { borderBottomColor: '#353638' },
+            table: { borderColor: '#353638' },
+            thead: { backgroundColor: '#292a2d' },
+            th: { borderBottomColor: '#66666e', borderRightColor: '#353638' },
+            td: { borderBottomColor: '#353638', borderRightColor: '#353638' },
+            'tbody tr:hover': { backgroundColor: '#1e1f21' },
+            code: { backgroundColor: '#353638' },
+          }
+        }
       }
     }
-  }
+  },
+  plugins: [
+    require('@tailwindcss/typography')
+  ]
 }

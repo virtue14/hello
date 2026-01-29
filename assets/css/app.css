@@ -30,9 +30,9 @@
 
   .permalink-container {
     @apply w-full px-4 lg:px-0 lg:max-w-screen-lg lg:w-pem lg:mx-auto;
-    /* 티스토리 관리자 설정 너비: 800~1200px 범위 제한 */
-    min-width: min(800px, 100%);
-    max-width: min(1200px, 100%);
+    /* 본문 너비: 720px (노트북 호환) */
+    min-width: min(720px, 100%);
+    max-width: min(720px, 100%);
   }
 
   .cover-cols-1 {

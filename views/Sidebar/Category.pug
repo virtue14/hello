@@ -140,6 +140,15 @@ script.
       'js.err': 'fa-solid fa-bug',
       'git.err': 'fa-solid fa-bug',
       
+      // 대분류 카테고리 아이콘
+      '개발노트': 'fa-solid fa-code',
+      '개발 노트': 'fa-solid fa-code',
+      'til': 'fa-solid fa-calendar-check',
+      '문제풀이': 'fa-solid fa-puzzle-piece',
+      '문제 풀이': 'fa-solid fa-puzzle-piece',
+      '삽질로그': 'fa-solid fa-hammer',
+      '삽질 로그': 'fa-solid fa-hammer',
+      
       // ETC
       '깜지': 'fa-solid fa-note-sticky',
       '일상': 'fa-solid fa-address-book',
@@ -245,8 +254,8 @@ script.
         }
       } catch (e) {}
 
-      // 아이콘 삽입 (서브 카테고리 아이템인 경우)
-      if (link.classList.contains('link_sub_item')) {
+      // 아이콘 삽입 (대분류 또는 서브 카테고리 아이템인 경우)
+      if (link.classList.contains('link_sub_item') || link.classList.contains('link_item')) {
          // 텍스트 추출 (카운트 제외)
          // link 내부 구조: 텍스트 노드 + span.c_cnt
          // childNodes를 순회하여 텍스트만 가져옴
@@ -351,6 +360,11 @@ style
                 @apply flex items-center gap-x-2; /* 아이콘과 텍스트 정렬 */
             }
           }
+        }
+        
+        /* 대분류 카테고리 아이콘 정렬 */
+        .link_item {
+          @apply flex items-center gap-x-2;
         }
         
         /* 현재 활성 카테고리 스타일 */

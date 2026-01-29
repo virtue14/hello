@@ -1,15 +1,93 @@
 template(x-if='$data.headings.length > 0')
-  aside#toc(class='rounded-md p-5 mb-8 box-border bg-h-200 text-h-500 dark:bg-h-700 dark:text-h-200')
-    .tit(class='flex items-center justify-between text-overflow-hidden text-sm pb-2 mb-4 border-b border-solid border-h-300 dark:border-h-600')
-      span.txt(class='text-base') 목차
-      i.ico(class='fas fa-bars')
-    ol.tits(class='flex flex-col gap-y-3')
+  aside#toc(class='xl:sticky xl:top-4 mb-8')
+    ul.toc-list(class='flex flex-col text-sm border-l-2 border-h-300 dark:border-h-600')
       template(x-for='heading in $data.headings' :key='heading.id')
-        li.tit(:class='{ "pl-0": heading.tagName === "H2", "pl-4": heading.tagName === "H3" }')
-          a.link(
+        li.toc-item(
+          :class='{ \
+            "depth-2": heading.tagName === "H2", \
+            "depth-3": heading.tagName === "H3", \
+            "depth-4": heading.tagName === "H4" \
+          }')
+          a.toc-link(
             :href='heading.href'
-            class='flex items-center justify-between text-sm duration-200 text-h-400 hover:text-h-600 dark:hover:text-h-200')
-            .txt(
-              x-text='heading.text'
-              class='text-overflow-hidden')
-            i.ico(class='fas fa-arrow-right scale-75')
+            :data-id='heading.id'
+            x-text='heading.text'
+            @click='$data.activeId = heading.id'
+            :class='$data.activeId === heading.id ? "is-active" : ""')
+
+style(once='toc-kakao')
+  :postcss
+    #toc {
+      .toc-list {
+        @apply pl-0 m-0 list-none;
+      }
+      
+      .toc-item {
+        @apply py-1.5;
+        
+        &.depth-2 {
+          @apply pl-4;
+        }
+        
+        &.depth-3 {
+          @apply pl-8;
+        }
+        
+        &.depth-4 {
+          @apply pl-12;
+        }
+      }
+      
+      .toc-link {
+        @apply block text-h-400 dark:text-h-500 hover:text-h-700 dark:hover:text-h-300 transition-colors duration-200;
+        @apply border-l-2 border-transparent -ml-[2px] pl-4;
+        
+        &.is-active {
+          @apply text-h-700 dark:text-h-200 border-h-600 dark:border-h-400 font-medium;
+        }
+      }
+    }
+
+script(once='toc-scroll-spy').
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('toc', () => ({
+      headings: [],
+      activeId: '',
+      
+      init() {
+        // 헤딩 수집
+        const article = document.querySelector('.contents_style');
+        if (!article) return;
+        
+        const headingElements = article.querySelectorAll('h2, h3, h4');
+        this.headings = Array.from(headingElements).map((el, index) => {
+          if (!el.id) {
+            el.id = el.textContent.replace(/\s+/g, '-') + '-' + index;
+          }
+          return {
+            id: el.id,
+            tagName: el.tagName,
+            text: el.textContent,
+            href: '#' + encodeURIComponent(el.id)
+          };
+        });
+        
+        // 스크롤 스파이
+        if (this.headings.length > 0) {
+          this.activeId = this.headings[0].id;
+          
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                this.activeId = entry.target.id;
+              }
+            });
+          }, {
+            rootMargin: '-20% 0px -70% 0px'
+          });
+          
+          headingElements.forEach(el => observer.observe(el));
+        }
+      }
+    }));
+  });
