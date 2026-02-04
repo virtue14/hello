@@ -1,7 +1,7 @@
-//- 개발 환경 전용: #article .container_postbtn이 존재할 때만 렌더링
+//- 개발 환경 전용: .container_postbtn이 존재할 때만 렌더링
 //- x-teleport는 target이 반드시 존재해야 하므로 production에서만 사용
 if process.env.NODE_ENV !== 'development'
-  template(x-teleport='#article .container_postbtn')
+  template(x-teleport='.container_postbtn')
     button.btn_menu_toolbar.btn_subscription(
       type='button'
       class='#subscribe'
@@ -15,23 +15,21 @@ if process.env.NODE_ENV !== 'development'
 
 style(once='content-subscription-button')
   :postcss
-    #article {
-      .container_postbtn {
-        .btn_subscription {
-          @apply flex items-center gap-x-1;
+    #footer-postbtn-area {
+      .btn_subscription {
+        @apply flex items-center gap-x-1;
 
-          .subscription-icon {
-            @apply text-sm;
-          }
+        .subscription-icon {
+          @apply text-sm;
+        }
 
-          .txt_state {
-            @apply text-hidden;
-          }
+        .txt_state {
+          @apply text-hidden;
+        }
 
-          .txt_tool_id,
-          .ico_check_type1 {
-            @apply hidden;
-          }
+        .txt_tool_id,
+        .ico_check_type1 {
+          @apply hidden;
         }
       }
     }

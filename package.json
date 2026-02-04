@@ -13,12 +13,12 @@
     "start": "cross-env NODE_ENV=development tidory start",
     "preview": "cross-env NODE_ENV=development tidory preview",
     "preview:old": "cross-env NODE_ENV=development tidory preview --old",
-    "production": "cross-env NODE_ENV=production tidory production",
+    "production": "cross-env NODE_ENV=production tidory production && cp assets/images/*.png dist/",
     "deploy": "tidory deploy",
     "store": "tidory store",
     "lint": "eslint && pug-lint .",
     "build:portfolio": "postcss packages/portfolio/src/css -d packages/portfolio/dist",
-    "predeploy": "find dist -name \".DS_Store\" -delete && rm -f dist/images/millo.png dist/images/virtue.png"
+    "predeploy": "find dist -name \".DS_Store\" -delete && cp assets/images/*.png dist/"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

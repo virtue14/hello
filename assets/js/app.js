@@ -172,24 +172,38 @@ Alpine.data('parseSocialLinks', (description = '') => ({
 Alpine.data('linkIconRouter', () => ({
     iconClass: 'fa-solid fa-link',
     iconStyle: '',
+    isImage: false,
 
     init() {
         const name = this.$el.closest('a').getAttribute('title') || '';
         const result = this.getIcon(name);
-        this.iconClass = result.className;
-        this.iconStyle = result.style || '';
+
+        if (result.isImage) {
+            // 이미지 아이콘인 경우
+            this.isImage = true;
+            this.iconClass = '';
+            this.iconStyle = `background-image: url('${result.src}'); background-size: contain; background-repeat: no-repeat; background-position: center; width: 24px; height: 24px; display: inline-block;`;
+        } else {
+            // Font Awesome 아이콘인 경우
+            this.iconClass = result.className;
+            this.iconStyle = result.style || '';
+        }
     },
 
     getIcon(name) {
         const n = name.toLowerCase();
 
-        if (n.includes('밀로(millo)') || n.includes('밀로')) {
-            return { className: 'fa-solid fa-lightbulb' };
-        }
-        if (n.includes('project') || n.includes('프로젝트')) {
-            return { className: 'fa-solid fa-code-branch' };
+        // 이미지 아이콘 (Tistory CDN URL - JS 상대경로는 페이지 기준으로 해석됨)
+        if (n.includes('밀로(millo)') || n.includes('밀로') || n.includes('millo')) {
+            return { isImage: true, src: 'https://tistory1.daumcdn.net/tistory/6976895/skin/millo.png' };
         }
 
+        // 프로젝트 아이콘
+        if (n.includes('project') || n.includes('프로젝트')) {
+            return { isImage: true, src: 'https://tistory1.daumcdn.net/tistory/6976895/skin/virtue.png' };
+        }
+
+        // Font Awesome 브랜드 아이콘
         if (n.includes('github')) return { className: 'fa-brands fa-github' };
         if (n.includes('gitlab')) return { className: 'fa-brands fa-gitlab' };
         if (n.includes('linkedin')) return { className: 'fa-brands fa-linkedin' };

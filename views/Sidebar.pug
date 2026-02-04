@@ -1,21 +1,17 @@
-//- 노션 스타일 사이드바: 닫으면 완전 숨김 + 메인 콘텐츠 확장
+//- 사이드바: 모바일에서만 접었다 폈다, PC(xl)에서는 항상 고정
 aside#sidebar(
-  :class='sidebar ? "left-0 w-s" : "-left-full xl:w-0 xl:overflow-hidden"'
-  class='group h-full fixed top-0 overflow-hidden z-[9000] transition-all duration-300 p-0 bg-h-200 dark:bg-h-700 xl:relative xl:left-0')
+  :class='sidebar ? "left-0 w-s" : "-left-full xl:left-0 xl:w-s"'
+  class='group h-full fixed top-0 overflow-hidden z-[9000] transition-all duration-300 p-0 bg-h-200 dark:bg-h-700 xl:relative')
   
-  //- 접기 버튼 (Teleport로 Body로 이동, 사이드바 열렸을 때 표시)
+  //- 모바일용 닫기 버튼 (xl에서는 숨김)
   template(x-teleport='body')
-    button.sidebar-collapse-btn(
+    button.sidebar-close-btn(
       x-show='sidebar'
       @click='sidebar = false'
-      class='hidden xl:flex fixed top-1/2 -translate-y-1/2 items-center justify-center rounded-r-md bg-h-200 dark:bg-h-700 text-h-500 hover:text-h-800 dark:hover:text-h-200 hover:w-10 transition-all z-[9999] shadow-md border border-l-0 border-h-300 dark:border-h-600 w-8 h-12'
-      style='left: var(--h-s, 256px)'
-      x-transition:enter='transition ease-out duration-300'
-      x-transition:enter-start='opacity-0 -translate-x-full'
-      x-transition:enter-end='opacity-100 translate-x-0'
-      aria-label='사이드바 접기'
+      class='xl:hidden fixed top-4 right-4 items-center justify-center rounded-md bg-h-200 dark:bg-h-700 text-h-500 hover:text-h-800 dark:hover:text-h-200 transition-all z-[9999] w-10 h-10'
+      aria-label='사이드바 닫기'
     )
-      i(class='fa-solid fa-chevron-left')
+      i(class='fa-solid fa-xmark')
 
   ul.wrap(class='flex flex-col gap-y-6 overflow-x-hidden overflow-y-scroll h-full w-[calc(theme(spacing.s)+theme(spacing.8))] py-6 border-box xl:relative no-scrollbar')
     //- 고정 아이템 (사용자 요청: 프로필 - 링크 - 방문자수 - 검색 - 카테고리 만 유지)

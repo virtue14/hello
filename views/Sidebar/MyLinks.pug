@@ -8,6 +8,6 @@ li#my-links.el
           target='_blank'
           title='[##_link_site_##]'
           class='text-h-400 hover:text-h-800 dark:hover:text-h-200 transition-colors flex items-center justify-center')
-          //- Icon Router 적용 (이미지/폰트 통합 처리)
-          div(x-data='linkIconRouter' class='flex items-center justify-center')
-            i.ico(:class='iconClass' :style='iconStyle' class='text-xl flex items-center justify-center')
+          //- CSS ::before로 도메인별 아이콘 처리
+          i.ico.fa-solid.fa-link(class='text-xl')
+

@@ -1,44 +1,38 @@
-//- 전체 컨테이너 (본문 + TOC flex 레이아웃)
-#content(
-  x-data='content'
-  class='permalink-container')
-  //- flex 컨테이너 (본문 + TOC)
-  .content-flex(class='xl:flex xl:gap-16')
-    //- 본문 영역 (720px 고정)
-    .content-main(x-ref='article' class='w-[720px] max-w-full xl:max-w-[720px]')
+//- 전체 컨테이너
+#content-wrapper(x-data='content' class='relative')
+  //- 본문 컨테이너 (중앙 정렬)
+  #content(class='permalink-container')
+    //- 본문 영역
+    .content-main(x-ref='article')
       include Content/Article
     
-    //- TOC 사이드 (xl에서만 표시, sticky)
-    s_if_var_toc
-      aside.content-toc(
-        x-show='tocVisible'
-        x-transition:enter='transition ease-out duration-200'
-        x-transition:enter-start='opacity-0'
-        x-transition:enter-end='opacity-100'
-        x-transition:leave='transition ease-in duration-150'
-        x-transition:leave-start='opacity-100'
-        x-transition:leave-end='opacity-0')
-        .toc-sticky(class='sticky top-24')
-          include Content/TOC
-  
-  s_if_var_scrollspy
-    include Content/Scrollspy
-  
+    s_if_var_scrollspy
+      include Content/Scrollspy
+
+  //- TOC 사이드 (본문 오른쪽에 absolute, xl에서만 표시)
+  s_if_var_toc
+    aside.content-toc
+      include Content/TOC
+
   //- 게시글 전용 Top 버튼 (우측 하단 fixed)
   button.go-top-btn(
-    x-show='tocVisible'
-    x-transition
-    @click="(document.querySelector('.main-content') || window).scrollTo({ top: 0, behavior: 'smooth' })"
-    class='fixed bottom-8 right-20 w-12 h-12 bg-h-blue text-h-100 rounded-full shadow-lg flex items-center justify-center hover:bg-h-blue/80 transition-colors z-50')
+    class='fixed bottom-8 right-8 w-12 h-12 bg-h-blue text-h-100 rounded-full shadow-lg flex items-center justify-center hover:bg-h-blue/80 transition-colors z-50')
     i.fa-solid.fa-chevron-up
 
 style(once='toc-layout-style')
   :postcss
+    #content-wrapper {
+      @apply w-full relative;
+    }
+    
     .content-toc {
       @apply hidden;
       
       @media (min-width: 1280px) {
-        @apply block w-56 flex-shrink-0;
+        @apply block absolute w-48;
+        /* 본문 오른쪽에 배치: 중앙 + 본문너비/2 + gap */
+        left: calc(50% + 360px + 2rem);
+        top: 0;
       }
     }
     

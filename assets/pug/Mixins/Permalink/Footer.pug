@@ -1,5 +1,128 @@
+//- Footer (중앙 정렬)
 footer#footer(class='permalink-container mb-9')
+  //- 게시글 버튼 영역 (article에서 이동됨)
+  #footer-postbtn-area
+  
   if hasCategory
     include Footer/RelatedArticle
     include Footer/Tag
   include Footer/Author
+
+//- container_postbtn을 footer로 이동시키는 스크립트
+script(once='move-postbtn-to-footer').
+  document.addEventListener('DOMContentLoaded', function() {
+    const postbtn = document.querySelector('#article .container_postbtn');
+    const footerArea = document.querySelector('#footer-postbtn-area');
+    if (postbtn && footerArea) {
+      footerArea.appendChild(postbtn);
+      
+      // 커스텀 구독 버튼을 container_postbtn 안에 이동
+      const customSubscription = document.querySelector('#footer-postbtn-area > .btn_subscription[data-teleport-target]');
+      if (customSubscription) {
+        postbtn.appendChild(customSubscription);
+      }
+    }
+    
+    // SupportButton 숨김
+    const supportBtn = document.querySelector('[data-tistory-react-app="SupportButton"]');
+    if (supportBtn) {
+      supportBtn.style.display = 'none';
+    }
+  });
+
+style(once='footer-postbtn-style')
+  :postcss
+    #footer-postbtn-area {
+      @apply mb-8;
+      
+      .container_postbtn {
+        @apply flex gap-x-2 p-0 text-h-600 dark:text-h-200;
+
+        .postbtn_like > .wrap_btn:not([id^=reaction-]) > button,
+        .btn_subscription,
+        .tt-btn-support {
+          @apply w-9 h-9 inline-block shadow-none outline-0 rounded-md cursor-pointer duration-200 leading-none text-[0] p-0 m-0 bg-h-200 border-0 hover:bg-h-300 before:text-h-500;
+          @apply dark:bg-h-700 dark:before:text-h-200 dark:hover:bg-h-600;
+        }
+
+        .postbtn_like {
+          @apply border-0 p-0 flex gap-x-2;
+
+          .wrap_btn {
+            @apply inline-block border-0;
+
+            button,
+            button[data-entry-id],
+            .uoc-count {
+              &::before {
+                @apply font-bold text-sm;
+              }
+            }
+
+            .ico_like,
+            .ico_share,
+            .ico_statistics,
+            .ico_etc {
+              @apply text-hidden bg-none;
+            }
+
+            &[id^=reaction-] button {
+              @apply px-3 h-9 rounded-md bg-h-700 hover:bg-h-600;
+
+              .uoc-icon {
+                @apply text-h-200;
+              }
+
+              .uoc-count {
+                @apply font-bold leading-none;
+
+                &::before {
+                  @apply text-sm mr-1.5 fa-heart;
+                }
+              }
+            }
+
+            &.wrap_btn_share .btn_share::before {
+              @apply fa-share-nodes;
+            }
+
+            button[data-entry-id] {
+              &::before {
+                @apply fa-chart-pie;
+              }
+            }
+
+            &.wrap_btn_etc {
+              .btn_etc1::before {
+                @apply fa-wrench;
+              }
+
+              .btn_etc2::before {
+                @apply fa-ellipsis;
+              }
+            }
+          }
+        }
+
+        /* 서포트 버튼 숨김 */
+        [data-tistory-react-app="SupportButton"] {
+          @apply hidden;
+        }
+      }
+
+      /* 커스텀 구독 버튼 */
+      > .btn_subscription {
+        @apply w-9 h-9 inline-block shadow-none outline-0 rounded-md cursor-pointer duration-200 leading-none text-[0] p-0 m-0 bg-h-200 border-0 hover:bg-h-300;
+        @apply dark:bg-h-700 dark:hover:bg-h-600 flex items-center justify-center;
+
+        .subscription-icon {
+          @apply text-sm text-h-500 dark:text-h-200;
+        }
+
+        .txt_state,
+        .txt_tool_id,
+        .ico_check_type1 {
+          @apply hidden;
+        }
+      }
+    }

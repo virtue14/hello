@@ -4,6 +4,7 @@ block TIDORY
   s_t3
     #index(
       x-data='{ sidebar: window.innerWidth >= 1280 }'
+      @resize.window='sidebar = window.innerWidth >= 1280 ? true : sidebar'
       class='flex flex-col xl:flex-row break-all h-full overflow-hidden')
       include views/Sidebar
       //- 노션 스타일: 사이드바 상태에 따라 메인 콘텐츠 확장

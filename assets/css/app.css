@@ -29,16 +29,18 @@
   }
 
   .permalink-container {
-    @apply w-full px-4 lg:px-0 lg:mx-auto;
+    @apply w-full px-4 lg:px-0;
     /* 모바일/태블릿: 720px 제한 */
     max-width: min(720px, 100%);
+    margin: 0 auto;
   }
 
   @media (min-width: 1280px) {
     .permalink-container {
-      /* xl: 본문(720px) + 갭(64px) + TOC(224px) = 1008px */
-      max-width: 1008px;
+      /* xl: 본문 720px, 중앙 정렬 */
+      max-width: 720px;
       padding: 0;
+      margin: 0 auto;
     }
   }
 
@@ -51,7 +53,7 @@
   }
 
   .cover-cols-3 {
-    @apply cover-cols-2 md:grid-cols-2 lg:grid-cols-3;
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
   }
 
   .cover-button {
@@ -272,4 +274,92 @@
 
 #bottom .btn .ico {
   @apply text-base;
+}
+
+/* ===== 사이드바 링크 아이콘 스타일 ===== */
+/* 기본 아이콘 숨기기 (커스텀 아이콘 있을 때) */
+#my-links a[title="밀로(MILLO)"] .ico,
+#my-links a[title="Project"] .ico,
+#my-links a[title="GitHub"] .ico {
+  display: none;
+}
+
+/* GitHub 아이콘 (Font Awesome) */
+#my-links a[title="GitHub"]::before {
+  font-family: "Font Awesome 6 Brands";
+  content: "\f09b";
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+/* 커스텀 이미지 아이콘 */
+#my-links a[title="밀로(MILLO)"]::before {
+  content: "";
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url("https://tistory1.daumcdn.net/tistory/6976895/skin/images/millo.png") center/cover no-repeat;
+  border-radius: 4px;
+}
+
+#my-links a[title="Project"]::before {
+  content: "";
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url("https://tistory1.daumcdn.net/tistory/6976895/skin/images/virtue.png") center/cover no-repeat;
+  border-radius: 4px;
+}
+
+/* ===== 화면 크기별 게시물 개수 제한 ===== */
+/* 웹 (lg+): 9개 모두 표시 */
+/* 태블릿/2열 (sm~lg): 8개까지 표시 */
+/* 모바일/1열 (~sm): 5개까지 표시 */
+
+/* 1열 모드 (~640px): 6번째 이후 숨김 */
+@media (max-width: 639px) {
+
+  [data-list-style=gallery] .post:nth-child(n+6),
+  [data-list-style=grid] .post:nth-child(n+6) {
+    display: none;
+  }
+}
+
+/* 2열 모드 (640px~1023px): 9번째 이후 숨김 */
+@media (min-width: 640px) and (max-width: 1023px) {
+
+  [data-list-style=gallery] .post:nth-child(n+9),
+  [data-list-style=grid] .post:nth-child(n+9) {
+    display: none;
+  }
+}
+
+/* ===== 보기 전환 버튼 ===== */
+#list .view-toggle {
+  grid-column: 1 / -1;
+  /* 그리드 모드에서 전체 너비 차지 */
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+/* 리스트 모드: index-container와 동일한 스타일 적용 */
+[data-list-style=list] .view-toggle {
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+  [data-list-style=list] .view-toggle {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: var(--h-idx, 100%);
+  }
 }
