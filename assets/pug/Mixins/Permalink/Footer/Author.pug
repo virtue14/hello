@@ -1,17 +1,67 @@
-#author(class='border-t border-b border-h-300 dark:border-h-600 mt-6 py-8 flex gap-x-5 items-center')
-  img.thumb(
-    data-src='[##_image_##]'
-    data-sizes='auto'
-    width='80'
-    height='80'
-    alt='[##_blogger_##]'
-    class='lazyload rounded-full object-cover w-20 h-20')
-  .profile(class='flex flex-col gap-y-1')
-    .blogger(class='text-h-800 dark:text-h-200 font-bold') [##_blogger_##]
-    .desc(class='leading-7 text-sm text-h-400') [##_desc_##]
+#author(class='border-t border-b border-h-300 dark:border-h-600 mt-6 py-8 flex justify-between items-center')
+  .author-info(class='flex gap-x-5 items-center')
+    img.thumb(
+      data-src='[##_image_##]'
+      data-sizes='auto'
+      width='80'
+      height='80'
+      alt='[##_blogger_##]'
+      class='lazyload rounded-full object-cover w-20 h-20')
+    .profile(class='flex flex-col gap-y-1')
+      .blogger(class='text-h-800 dark:text-h-200 font-bold') [##_blogger_##]
+      .desc(class='leading-7 text-sm text-h-400') [##_desc_##]
+      //- 소셜 링크 (사이드바에서 Github 링크 복사)
+      .author-links#author-social-links(class='flex gap-x-3 mt-2')
+
+  //- 구독 버튼 (티스토리 #subscribe 클래스로 자동 처리)
+  button.btn_subscription(
+    type='button'
+    class='#subscribe h-10 px-4 inline-flex items-center gap-x-2 rounded-md cursor-pointer duration-200 bg-h-200 hover:bg-h-300 text-h-600 dark:bg-h-700 dark:hover:bg-h-600 dark:text-h-200'
+    data-device='web_pc')
+    i.fa-solid.fa-bell.subscription-icon
+    span.txt_state 구독
+
+//- 사이드바 링크에서 Github만 복사하여 표시 (LinkedIn은 등록되지 않음)
+script(once='author-links-clone').
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('author-social-links');
+    if (!container) return;
+    
+    // 사이드바 링크들에서 복사
+    const sidebarLinks = document.querySelectorAll('#my-links .links a.link');
+    
+    sidebarLinks.forEach(link => {
+      const title = (link.getAttribute('title') || '').toLowerCase();
+      const href = link.getAttribute('href') || '';
+      
+      let iconClass = null;
+      if (title.includes('github') || href.includes('github.com')) {
+        iconClass = 'fa-brands fa-github';
+      } else if (title.includes('linkedin') || href.includes('linkedin.com')) {
+        iconClass = 'fa-brands fa-linkedin';
+      }
+      
+      if (iconClass) {
+        const newLink = document.createElement('a');
+        newLink.href = href;
+        newLink.target = '_blank';
+        newLink.rel = 'noopener noreferrer';
+        newLink.className = 'text-h-400 hover:text-h-700 dark:hover:text-h-200 transition-colors';
+        newLink.setAttribute('aria-label', link.getAttribute('title') || '');
+        newLink.innerHTML = `<i class="${iconClass} text-lg"></i>`;
+        container.appendChild(newLink);
+      }
+    });
+  });
 
 style(once='namecard')
   :postcss
     div[data-tistory-react-app=Namecard] {
       @apply hidden;
+    }
+    
+    #author .btn_subscription {
+      .txt_state {
+        @apply text-sm;
+      }
     }

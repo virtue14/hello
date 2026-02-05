@@ -80,7 +80,7 @@ script.
       'redis': 'devicon-redis-plain',
       
       // DevOps
-      'devops': 'fa-solid fa-server',
+      'devops': 'fa-solid fa-infinity',
       'os': 'fa-solid fa-computer',
       'window': 'fa-brands fa-windows',
       'linux': 'fa-brands fa-linux',
@@ -144,10 +144,10 @@ script.
       '개발노트': 'fa-solid fa-code',
       '개발 노트': 'fa-solid fa-code',
       'til': 'fa-solid fa-calendar-check',
-      '문제풀이': 'fa-solid fa-puzzle-piece',
-      '문제 풀이': 'fa-solid fa-puzzle-piece',
-      '삽질로그': 'fa-solid fa-hammer',
-      '삽질 로그': 'fa-solid fa-hammer',
+      '문제풀이': 'fa-solid fa-brain',
+      '문제 풀이': 'fa-solid fa-brain',
+      '삽질로그': 'fa-solid fa-person-digging',
+      '삽질 로그': 'fa-solid fa-person-digging',
       
       // ETC
       '깜지': 'fa-solid fa-note-sticky',
@@ -213,10 +213,6 @@ script.
     // 경로 길이가 가장 긴 것을 선택 (대분류 vs 대분류/소분류 중 소분류 선택)
     if (candidatePaths.length > 0) {
       articleCategoryPath = candidatePaths.reduce(function(a, b) { return a.length > b.length ? a : b; });
-      console.log('[Sidebar] Candidates:', candidatePaths);
-      console.log('[Sidebar] Selected:', articleCategoryPath);
-    } else {
-      console.log('[Sidebar] No category candidates found from article.');
     }
 
     // 모든 카테고리 링크 스캔 (서브카테고리 루프보다 전체 링크 루프가 더 포괄적임)
@@ -241,10 +237,6 @@ script.
               const parentLi = parent.parentElement;
               const parentLink = parentLi.querySelector(':scope > a');
               if (parentLink) parentLink.classList.add('is-active');
-              
-              // 아이콘 회전 처리
-              const icon = parentLi.querySelector('.fa-chevron-right.collapse-icon');
-              if (icon) icon.classList.add('rotate-90');
             }
             
             // 최상위 도달 시 중단
@@ -276,45 +268,9 @@ script.
       }
     });
 
-    // 아이콘 초기화
+    // 모든 서브카테고리를 항상 펼침 상태로 설정
     subCategories.forEach(function(subCategory) {
-      const parentLi = subCategory.parentElement;
-      
-      // 이미 아이콘이 있으면 건너뜀
-      if (parentLi.querySelector('.collapse-icon')) return;
-      
-      const icon = document.createElement('i');
-      icon.className = 'fa-solid fa-chevron-right collapse-icon absolute right-0 text-2xs cursor-pointer leading-5 transition-transform duration-200';
-      icon.style.cssText = 'top: 0; padding: 0 10px; z-index: 20; color: #999;'; 
-      
-      // 상태에 따라 회전 (이미 위 로직에서 style.display=block 및 아이콘 회전을 처리했을 수 없음 - 아이콘이 아직 없으므로)
-      // 따라서 아이콘 생성 후 상태 동기화 필요
-      if (subCategory.style.display === 'block') {
-         icon.classList.add('rotate-90');
-      }
-
-      // 클릭 이벤트 핸들러
-      icon.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const isHidden = getComputedStyle(subCategory).display === 'none';
-        if (isHidden) {
-          subCategory.style.display = 'block';
-          icon.classList.add('rotate-90');
-        } else {
-          subCategory.style.display = 'none';
-          icon.classList.remove('rotate-90');
-        }
-      });
-
-      // 아이콘 추가
-      if (skinOptions.foldableCategory) {
-        if (getComputedStyle(parentLi).position === 'static') {
-          parentLi.style.position = 'relative';
-        }
-        parentLi.insertBefore(icon, parentLi.firstChild);
-      }
+      subCategory.style.display = 'block';
     });
   });
 
@@ -343,11 +299,6 @@ style
 
           li {
             @apply relative pr-5 mb-1; /* 간격 증가: mb-1 추가 */
-
-            i.collapse-icon {
-              @apply absolute right-0 text-2xs cursor-pointer leading-5;
-              top: 2px; /* 텍스트와 수직 정렬 */
-            }
           }
         }
 

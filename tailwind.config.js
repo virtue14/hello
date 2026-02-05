@@ -40,6 +40,9 @@ module.exports = {
       fontSize: {
         '2xs': '0.625rem'
       },
+      minHeight: {
+        h: 'var(--h-h)'
+      },
       keyframes: {
         loading: {
           '0%': { transform: 'rotate(0deg)' },

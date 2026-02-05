@@ -1,17 +1,16 @@
 //- 사이드바: 모바일에서만 접었다 폈다, PC(xl)에서는 항상 고정
 aside#sidebar(
-  :class='sidebar ? "left-0 w-s" : "-left-full xl:left-0 xl:w-s"'
-  class='group h-full fixed top-0 overflow-hidden z-[9000] transition-all duration-300 p-0 bg-h-200 dark:bg-h-700 xl:relative')
+  :class='sidebar ? "left-0 w-s" : "-left-[300px] w-0 xl:left-0 xl:w-s"'
+  class='group h-full fixed top-0 overflow-hidden z-[9000] transition-all duration-300 p-0 bg-h-200 dark:bg-h-700')
   
-  //- 모바일용 닫기 버튼 (xl에서는 숨김)
-  template(x-teleport='body')
-    button.sidebar-close-btn(
-      x-show='sidebar'
-      @click='sidebar = false'
-      class='xl:hidden fixed top-4 right-4 items-center justify-center rounded-md bg-h-200 dark:bg-h-700 text-h-500 hover:text-h-800 dark:hover:text-h-200 transition-all z-[9999] w-10 h-10'
-      aria-label='사이드바 닫기'
-    )
-      i(class='fa-solid fa-xmark')
+  //- 모바일용 닫기 버튼 (사이드바 내부 상단 우측, xl에서는 숨김)
+  button.sidebar-close-btn(
+    x-show='sidebar'
+    @click='sidebar = false'
+    class='xl:hidden absolute top-4 right-4 flex items-center justify-center rounded-md bg-h-300 dark:bg-h-600 text-h-500 hover:text-h-800 dark:hover:text-h-200 transition-all z-[9999] w-8 h-8'
+    aria-label='사이드바 닫기'
+  )
+    i(class='fa-solid fa-xmark text-sm')
 
   ul.wrap(class='flex flex-col gap-y-6 overflow-x-hidden overflow-y-scroll h-full w-[calc(theme(spacing.s)+theme(spacing.8))] py-6 border-box xl:relative no-scrollbar')
     //- 고정 아이템 (사용자 요청: 프로필 - 링크 - 방문자수 - 검색 - 카테고리 만 유지)

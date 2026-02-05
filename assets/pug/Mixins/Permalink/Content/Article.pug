@@ -18,20 +18,35 @@ style(once='article')
           @apply my-5 font-medium scroll-mt-20;
 
           a {
-            @apply text-h-600 dark:text-h-200;
+            @apply decoration-0;
           }
         }
 
         h2 {
           @apply text-xl lg:text-2xl;
+          color: #7dd3fc !important;
+          
+          a {
+            color: #7dd3fc !important;
+          }
         }
 
         h3 {
           @apply text-lg lg:text-xl;
+          color: #a5b4fc !important;
+          
+          a {
+            color: #a5b4fc !important;
+          }
         }
 
         h4 {
           @apply text-base lg:text-lg;
+          color: #94a3b8 !important;
+          
+          a {
+            color: #94a3b8 !important;
+          }
         }
 
         ol[data-ke-list-type] {
@@ -111,7 +126,7 @@ style(once='article')
         table[data-ke-align] {
           td,
           th {
-            @apply bg-transparent border-0 border-b border-solid border-h-300 px-3 py-4 box-border text-sm leading-loose text-h-600;
+            @apply bg-transparent border-0 border-b border-solid border-h-300 px-3 py-4 box-border text-sm leading-loose text-h-600 content-center;
             @apply dark:text-h-200 dark:border-h-600;
 
             figure {
@@ -410,16 +425,15 @@ style(once='article-postbtn')
 
           }
 
-          /* 비로그인 상태에서 관리 버튼 숨김 (티스토리가 로그인 시에만 표시) */
+          /* 관리 버튼 - 티스토리가 본인일 때만 렌더링 */
           &.wrap_btn_etc {
-            @apply hidden;
-
             .btn_etc1::before {
               @apply fa-wrench;
             }
 
-            .btn_etc2::before {
-              @apply fa-ellipsis;
+            /* 신고 버튼 숨김 */
+            .btn_etc2 {
+              @apply hidden;
             }
           }
         }

@@ -373,7 +373,7 @@
   </variables>
   <default>
     <liststyle>gallery</liststyle>
-    <recentEntries>5</recentEntries>
+    <recentEntries>10</recentEntries>
     <recentComments>5</recentComments>
     <lengthOfRecentNotice>32</lengthOfRecentNotice>
     <lengthOfRecentEntry>32</lengthOfRecentEntry>

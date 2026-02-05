@@ -1,16 +1,21 @@
 s_article_related
   #related(class='rounded-md p-5 mt-4 mb-2 box-border bg-h-200 text-h-500 dark:bg-h-700 dark:text-h-200')
     .tit(class='font-bold flex items-center justify-between text-overflow-hidden text-sm pb-2 mb-4 border-b border-solid border-h-300 dark:border-h-600')
-      span.txt '[##_article_rep_category_##]' 카테고리의 다른 글
-      i.ico(class='fas fa-bars')
+      a.txt(
+        href='[##_article_rep_category_link_##]'
+        class='hover:text-h-700 dark:hover:text-h-100 cursor-pointer') '[##_article_rep_category_##]' 카테고리의 다른 글
+      a.ico(
+        href='[##_article_rep_category_link_##]'
+        class='fas fa-bars hover:text-h-700 dark:hover:text-h-100 cursor-pointer')
     ul.posts(class='flex flex-col gap-y-2')
       s_article_related_rep
-        li.post
-          a.tit(
+        li.post(class='flex items-center justify-between text-sm gap-x-2')
+          a.txt(
             href='[##_article_related_rep_link_##]'
-            class='flex items-center justify-between text-sm')
-            .txt(class='text-overflow-hidden') [##_article_related_rep_title_##]
-            i.ico(class='fas fa-arrow-right scale-75')
+            class='flex-1 truncate hover:text-h-700 dark:hover:text-h-100 cursor-pointer') [##_article_related_rep_title_##]
+          a.ico(
+            href='[##_article_related_rep_link_##]'
+            class='fas fa-arrow-right scale-75 hover:text-h-700 dark:hover:text-h-100 cursor-pointer')
 
 style(once='another-category')
   :postcss

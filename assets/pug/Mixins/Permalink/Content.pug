@@ -1,23 +1,52 @@
-//- 전체 컨테이너
-#content-wrapper(x-data='content' class='relative')
-  //- 본문 컨테이너 (중앙 정렬)
-  #content(class='permalink-container')
+//- 전체 컨테이너 (flex 레이아웃: 본문 + TOC)
+#content-wrapper(x-data='content' class='xl:flex xl:gap-8 xl:max-w-7xl xl:mx-auto xl:px-4')
+  //- 본문 + Footer 컨테이너 (flex-1로 남은 공간 차지)
+  #content(class='permalink-container xl:flex-1 xl:min-w-0')
     //- 본문 영역
     .content-main(x-ref='article')
       include Content/Article
     
     s_if_var_scrollspy
       include Content/Scrollspy
+    
+    //- Footer (본문과 같은 너비)
+    include ./Footer
 
-  //- TOC 사이드 (본문 오른쪽에 absolute, xl에서만 표시)
+  //- TOC 사이드 (sticky로 스크롤 따라다님)
   s_if_var_toc
-    aside.content-toc
+    aside.content-toc(x-data='toc')
       include Content/TOC
 
   //- 게시글 전용 Top 버튼 (우측 하단 fixed)
-  button.go-top-btn(
-    class='fixed bottom-8 right-8 w-12 h-12 bg-h-blue text-h-100 rounded-full shadow-lg flex items-center justify-center hover:bg-h-blue/80 transition-colors z-50')
+  button#go-top-btn(
+    style="display: none;"
+    class='fixed bottom-8 right-8 w-12 h-12 bg-h-blue text-h-100 rounded-full shadow-lg flex items-center justify-center hover:bg-h-blue/80 transition-all z-50 cursor-pointer')
     i.fa-solid.fa-chevron-up
+
+script(once='go-top-btn-script').
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('go-top-btn');
+    if (!btn) return;
+    
+    // .main-content가 스크롤 컨테이너
+    const container = document.querySelector('.main-content') || window;
+    
+    function checkScroll() {
+      const scrollY = container === window 
+        ? (window.scrollY || document.documentElement.scrollTop)
+        : container.scrollTop;
+      
+      btn.style.display = scrollY > 200 ? 'flex' : 'none';
+    }
+    
+    container.addEventListener('scroll', checkScroll);
+    
+    btn.addEventListener('click', function() {
+      container.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    checkScroll();
+  });
 
 style(once='toc-layout-style')
   :postcss
@@ -29,20 +58,15 @@ style(once='toc-layout-style')
       @apply hidden;
       
       @media (min-width: 1280px) {
-        @apply block absolute w-48;
-        /* 본문 오른쪽에 배치: 중앙 + 본문너비/2 + gap */
-        left: calc(50% + 360px + 2rem);
-        top: 0;
+        @apply block w-56 flex-shrink-0;
+        position: sticky;
+        top: 2rem;
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+        align-self: flex-start;
       }
     }
-    
-    .go-top-btn {
-      @apply hidden;
-      
-      @media (min-width: 768px) {
-        @apply flex;
-      }
-    }
+
 script(once='alpine-article-component').
   document.addEventListener('alpine:init', () => Alpine.data('content', () => ({
     /**

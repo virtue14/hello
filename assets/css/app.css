@@ -30,15 +30,15 @@
 
   .permalink-container {
     @apply w-full px-4 lg:px-0;
-    /* 모바일/태블릿: 720px 제한 */
-    max-width: min(720px, 100%);
+    /* 모바일/태블릿: 768px 제한 */
+    max-width: min(768px, 100%);
     margin: 0 auto;
   }
 
   @media (min-width: 1280px) {
     .permalink-container {
-      /* xl: 본문 720px, 중앙 정렬 */
-      max-width: 720px;
+      /* xl: 본문 768px, 중앙 정렬 */
+      max-width: 768px;
       padding: 0;
       margin: 0 auto;
     }
@@ -62,6 +62,25 @@
 
   .cover-fullscreen {
     @apply w-full h-screen;
+  }
+
+  /* 블루 악센트 구분선 */
+  .content-divider {
+    background: linear-gradient(to right,
+        transparent,
+        theme('colors.h.blue') 20%,
+        theme('colors.h.blue') 80%,
+        transparent);
+    opacity: 0.6;
+  }
+
+  .dark .content-divider {
+    background: linear-gradient(to right,
+        transparent,
+        theme('colors.h.blue') 20%,
+        theme('colors.h.blue') 80%,
+        transparent);
+    opacity: 0.5;
   }
 
   /* https://fontawesome.com/ */
@@ -277,41 +296,8 @@
 }
 
 /* ===== 사이드바 링크 아이콘 스타일 ===== */
-/* 기본 아이콘 숨기기 (커스텀 아이콘 있을 때) */
-#my-links a[title="밀로(MILLO)"] .ico,
-#my-links a[title="Project"] .ico,
-#my-links a[title="GitHub"] .ico {
-  display: none;
-}
+/* linkIconRouter가 아이콘을 관리하므로 기존 CSS 규칙 제거됨 */
 
-/* GitHub 아이콘 (Font Awesome) */
-#my-links a[title="GitHub"]::before {
-  font-family: "Font Awesome 6 Brands";
-  content: "\f09b";
-  font-size: 1.5rem;
-  font-weight: 400;
-}
-
-/* 커스텀 이미지 아이콘 */
-#my-links a[title="밀로(MILLO)"]::before {
-  content: "";
-  width: 24px;
-  height: 24px;
-  display: inline-block;
-  vertical-align: middle;
-  background: url("https://tistory1.daumcdn.net/tistory/6976895/skin/images/millo.png") center/cover no-repeat;
-  border-radius: 4px;
-}
-
-#my-links a[title="Project"]::before {
-  content: "";
-  width: 24px;
-  height: 24px;
-  display: inline-block;
-  vertical-align: middle;
-  background: url("https://tistory1.daumcdn.net/tistory/6976895/skin/images/virtue.png") center/cover no-repeat;
-  border-radius: 4px;
-}
 
 /* ===== 화면 크기별 게시물 개수 제한 ===== */
 /* 웹 (lg+): 9개 모두 표시 */
@@ -337,29 +323,28 @@
 }
 
 /* ===== 보기 전환 버튼 ===== */
-#list .view-toggle {
-  grid-column: 1 / -1;
-  /* 그리드 모드에서 전체 너비 차지 */
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.25rem;
-  margin-bottom: 1rem;
+.view-toggle .view-btn {
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  color: #9999a1;
+  transition: all 0.15s ease;
 }
 
-/* 리스트 모드: index-container와 동일한 스타일 적용 */
-[data-list-style=list] .view-toggle {
-  width: 100%;
-  padding-left: 1rem;
-  padding-right: 1rem;
+.view-toggle .view-btn:hover {
+  color: #66666e;
 }
 
-@media (min-width: 1024px) {
-  [data-list-style=list] .view-toggle {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    width: var(--h-idx, 100%);
-  }
+.view-toggle .view-btn.active {
+  background-color: #ffffff;
+  color: #1e1f21;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dark .view-toggle .view-btn.active {
+  background-color: #353638;
+  color: #f4f4f6;
+}
+
+.dark .view-toggle .view-btn:hover {
+  color: #e6e6e9;
 }

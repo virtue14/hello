@@ -60,6 +60,7 @@ script(once='toc-scroll-spy').
         if (!article) return;
         
         const headingElements = article.querySelectorAll('h2, h3, h4');
+        
         this.headings = Array.from(headingElements).map((el, index) => {
           if (!el.id) {
             el.id = el.textContent.replace(/\s+/g, '-') + '-' + index;
@@ -72,9 +73,11 @@ script(once='toc-scroll-spy').
           };
         });
         
-        // 스크롤 스파이
+        // 스크롤 스파이 (.main-content가 스크롤 컨테이너)
         if (this.headings.length > 0) {
           this.activeId = this.headings[0].id;
+          
+          const scrollContainer = document.querySelector('.main-content');
           
           const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -83,7 +86,8 @@ script(once='toc-scroll-spy').
               }
             });
           }, {
-            rootMargin: '-20% 0px -70% 0px'
+            root: scrollContainer,
+            rootMargin: '-10% 0px -80% 0px'
           });
           
           headingElements.forEach(el => observer.observe(el));
@@ -91,3 +95,4 @@ script(once='toc-scroll-spy').
       }
     }));
   });
+

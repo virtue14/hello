@@ -1,63 +1,79 @@
 header#header(
   x-ref='header'
-  data-header-style='[##_var_header-style_##]'
   class='px-4 mb-10 lg:px-0 lg:mb-16')
-  #{`s_${type}_rep_thumbnail`}
-    .img(class='absolute right-0 top-0 w-full before:content-[""] before:absolute before:right-0 before:top-0 before:w-full before:bg-h-900/20 before:z-10')
-      img.thumb(
-        src=`[##_${type}_rep_thumbnail_raw_url_##]`
-        alt=''
-        class='absolute right-0 top-0 w-full h-full z-0 object-cover')
-  .info(class='border-b border-solid border-b-h-300 dark:border-b-h-600 min-h-[theme(spacing.h)] flex flex-col justify-center items-center gap-y-1 relative z-20 text-h-800 dark:text-h-200')
-    h1.tit(class='text-center font-bold text-3xl max-w-screen-lg') #{`[##_${type}_rep_title_##]`}
-    .desc(class='flex gap-x-1 text-sm')
-      time.date #{`[##_${type}_rep_date_##]`}
-      span.delimiter ·
+  .info(class='min-h-[theme(spacing.h)] flex flex-col justify-center items-center gap-y-2 relative z-20 text-h-800 dark:text-h-200 pb-6')
+    //- 카테고리
+    .category-wrapper(class='text-sm text-h-500 dark:text-h-400')
       unless hasCategory
         case type
           when 'notice'
             a.category(class='/notice') 공지사항
       else
         a.category(href='[##_article_rep_category_link_##]') [##_article_rep_category_##]
+    //- 제목
+    h1.tit(class='text-center font-bold text-3xl max-w-screen-lg') #{`[##_${type}_rep_title_##]`}
+    //- 작성일
+    .meta(class='flex gap-x-2 text-sm text-h-400')
+      time.date #{`[##_${type}_rep_date_##]`}
       if hasCategory
         include Header/Admin
+    //- 태그
+    if hasCategory
+      s_tag_label
+        .header-tags(class='flex flex-wrap justify-center gap-2 mt-3 text-sm w-full')
+          | [##_tag_label_rep_##]
+  //- 블루 악센트 구분선 (두껍게)
+  .content-divider(class='mt-8 h-0.5 w-full')
 
-style(once='header-style-simple')
-  :postcss
-    #header[data-header-style=simple] {
-      .img {
-        @apply hidden;
+//- 날짜 형식 변환 (yyyy.mm.dd)
+script(once='format-date').
+  document.addEventListener('DOMContentLoaded', function() {
+    const dateEl = document.querySelector('#header time.date');
+    if (dateEl) {
+      const dateStr = dateEl.textContent.trim();
+      // 티스토리 날짜 형식: "2024. 1. 15. 10:30" 또는 "2024-01-15"
+      const match = dateStr.match(/(\d{4})[.\-\s]+(\d{1,2})[.\-\s]+(\d{1,2})/);
+      if (match) {
+        const year = match[1];
+        const month = match[2].padStart(2, '0');
+        const day = match[3].padStart(2, '0');
+        dateEl.textContent = year + '.' + month + '.' + day;
       }
+    }
+    
+    // 헤더 태그 쉼표 제거
+    const headerTags = document.querySelector('.header-tags');
+    if (headerTags) {
+      // 텍스트 노드에서 쉼표 제거
+      headerTags.childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent = node.textContent.replace(/,/g, '');
+        }
+      });
+    }
+  });
 
+style(once='header-style')
+  :postcss
+    #header {
       .info {
-        @apply h-h;
+        @apply min-h-h;
       }
     }
 
-style(once='header-style-thumbnail')
+//- 헤더 태그 스타일
+style(once='header-tags-style')
   :postcss
-    #header[data-header-style=thumbnail] {
-      @apply relative;
-
-      .img {
-        @apply h-h before:h-h;
-
-        & + .info {
-          @apply h-h text-h-200 border-0;
-        }
-      }
-    }
-
-style(once='header-style-screen')
-  :postcss
-    #header[data-header-style=screen] {
-      @apply relative;
-
-      .img {
-        @apply h-screen before:h-screen;
-
-        & + .info {
-          @apply h-screen text-h-200 border-0;
-        }
+    .header-tags a {
+      @apply px-3 py-1 rounded-full border border-h-300 dark:border-h-600;
+      @apply text-h-500 dark:text-h-400;
+      @apply hover:bg-h-200 dark:hover:bg-h-700 hover:text-h-700 dark:hover:text-h-200;
+      @apply transition-colors;
+      
+      &::before {
+        content: '\f02b';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        @apply mr-1.5 text-xs opacity-60;
       }
     }

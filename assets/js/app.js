@@ -179,7 +179,7 @@ Alpine.data('linkIconRouter', () => ({
         const result = this.getIcon(name);
 
         if (result.isImage) {
-            // 이미지 아이콘인 경우
+            // 이미지 아이콘인 경우 (24px 고정 크기)
             this.isImage = true;
             this.iconClass = '';
             this.iconStyle = `background-image: url('${result.src}'); background-size: contain; background-repeat: no-repeat; background-position: center; width: 24px; height: 24px; display: inline-block;`;
@@ -203,22 +203,22 @@ Alpine.data('linkIconRouter', () => ({
             return { isImage: true, src: 'https://tistory1.daumcdn.net/tistory/6976895/skin/virtue.png' };
         }
 
-        // Font Awesome 브랜드 아이콘
-        if (n.includes('github')) return { className: 'fa-brands fa-github' };
-        if (n.includes('gitlab')) return { className: 'fa-brands fa-gitlab' };
-        if (n.includes('linkedin')) return { className: 'fa-brands fa-linkedin' };
-        if (n.includes('instagram')) return { className: 'fa-brands fa-instagram' };
-        if (n.includes('twitter') || n === 'x') return { className: 'fa-brands fa-x-twitter' };
-        if (n.includes('facebook')) return { className: 'fa-brands fa-facebook' };
-        if (n.includes('youtube')) return { className: 'fa-brands fa-youtube' };
-        if (n.includes('twitch')) return { className: 'fa-brands fa-twitch' };
-        if (n.includes('tiktok')) return { className: 'fa-brands fa-tiktok' };
-        if (n.includes('discord')) return { className: 'fa-brands fa-discord' };
-        if (n.includes('email') || n.includes('mail') || n.includes('메일')) return { className: 'fa-solid fa-envelope' };
-        if (n.includes('velog')) return { className: 'fa-brands fa-vimeo-v' };
-        if (n.includes('notion')) return { className: 'fa-solid fa-n' };
+        // Font Awesome 브랜드 아이콘 (fa-fw로 고정 너비)
+        if (n.includes('github')) return { className: 'fa-brands fa-github fa-fw' };
+        if (n.includes('gitlab')) return { className: 'fa-brands fa-gitlab fa-fw' };
+        if (n.includes('linkedin')) return { className: 'fa-brands fa-linkedin fa-fw' };
+        if (n.includes('instagram')) return { className: 'fa-brands fa-instagram fa-fw' };
+        if (n.includes('twitter') || n === 'x') return { className: 'fa-brands fa-x-twitter fa-fw' };
+        if (n.includes('facebook')) return { className: 'fa-brands fa-facebook fa-fw' };
+        if (n.includes('youtube')) return { className: 'fa-brands fa-youtube fa-fw' };
+        if (n.includes('twitch')) return { className: 'fa-brands fa-twitch fa-fw' };
+        if (n.includes('tiktok')) return { className: 'fa-brands fa-tiktok fa-fw' };
+        if (n.includes('discord')) return { className: 'fa-brands fa-discord fa-fw' };
+        if (n.includes('email') || n.includes('mail') || n.includes('메일')) return { className: 'fa-solid fa-envelope fa-fw' };
+        if (n.includes('velog')) return { className: 'fa-brands fa-vimeo-v fa-fw' };
+        if (n.includes('notion')) return { className: 'fa-solid fa-n fa-fw' };
 
-        return { className: 'fa-solid fa-link' };
+        return { className: 'fa-solid fa-link fa-fw' };
     }
 }));
 
@@ -372,4 +372,6 @@ function initAdminButton() {
 // Alpine.start() 는 app.pug에서 DOMContentLoaded 후에 호출됨
 // 모든 Stores와 Components가 위에서 직접 등록되어 있으므로
 // Alpine.start()가 호출될 때 모두 사용 가능
+// ============================================
+
 // ============================================

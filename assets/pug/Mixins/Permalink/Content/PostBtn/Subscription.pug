@@ -1,35 +1,9 @@
-//- 개발 환경 전용: .container_postbtn이 존재할 때만 렌더링
-//- x-teleport는 target이 반드시 존재해야 하므로 production에서만 사용
-if process.env.NODE_ENV !== 'development'
-  template(x-teleport='.container_postbtn')
-    button.btn_menu_toolbar.btn_subscription(
-      type='button'
-      class='#subscribe'
-      :data-blog-id='T.config.BLOG.id'
-      :data-url='TistoryBlog.tistoryUrl'
-      data-device='web_pc')
-      i.fa-solid.fa-bell.subscription-icon
-      em.txt_state 구독하기
-      strong.txt_tool_id hELLO.
-      span.img_common_tistory.ico_check_type1
+//- 구독 버튼은 Author.pug에서 직접 렌더링됨
+//- 이 파일은 티스토리 기본 구독 버튼 스타일만 관리
 
 style(once='content-subscription-button')
   :postcss
-    #footer-postbtn-area {
-      .btn_subscription {
-        @apply flex items-center gap-x-1;
-
-        .subscription-icon {
-          @apply text-sm;
-        }
-
-        .txt_state {
-          @apply text-hidden;
-        }
-
-        .txt_tool_id,
-        .ico_check_type1 {
-          @apply hidden;
-        }
-      }
+    /* 티스토리 기본 구독 버튼 숨김 */
+    .container_postbtn > .btn_subscription:not([data-teleport-target]) {
+      @apply hidden;
     }

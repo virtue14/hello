@@ -49,7 +49,7 @@ style
           }
 
           .fallback {
-            @apply animate-pulse bg-h-200 dark:bg-h-700;
+            @apply bg-h-200 dark:bg-h-700;
           }
         }
 
@@ -72,20 +72,17 @@ style
 style
   :postcss
     #global-header ~ .post,
-    [data-list-style=list] .post,
-    [data-list-style=grid],
-    [data-list-style=Z],
-    [data-list-style=gallery] {
+    [data-list-style=list] .post {
       @apply index-container;
     }
 
-    [data-list-style=grid],
-    [data-list-style=gallery] {
-      @apply cover-cols-3;
+    [data-list-style=grid] .posts-wrapper,
+    [data-list-style=gallery] .posts-wrapper {
+      @apply index-container cover-cols-3;
     }
 
-    [data-list-style=Z] {
-      @apply cover-cols-1;
+    [data-list-style=Z] .posts-wrapper {
+      @apply index-container cover-cols-1;
     }
 
     [data-list-style=slider] {
@@ -93,11 +90,15 @@ style
     }
 
     [data-list-style=list] {
-      @apply max-sm:flex max-sm:flex-col max-sm:gap-y-6;
+      @apply max-sm:flex max-sm:flex-col;
     }
 
-    [data-list-style=gallery] {
-      @apply gap-2;
+    [data-list-style=list] .posts-wrapper {
+      @apply px-4;
+    }
+
+    [data-list-style=gallery] .posts-wrapper {
+      @apply gap-4 lg:gap-6;
     }
 
     [data-list-style=grid] {
@@ -164,47 +165,70 @@ style
   :postcss
     #global-header ~ .post,
     [data-list-style=list] .post {
-      @apply relative sm:border-t sm:border-solid sm:border-h-300 sm:dark:border-h-600 sm:first-of-type:border-t-0;
+      @apply relative border-t border-solid border-h-300 dark:border-h-600 first-of-type:border-t-0;
 
       .content {
-        @apply flex flex-col gap-y-4;
-        @apply sm:flex-row-reverse sm:items-center sm:justify-end sm:h-72;
+        /* 가로 배치 유지 (리스트 형태), 수직 중앙 정렬 */
+        @apply flex flex-row items-center gap-x-3 py-4;
 
         .picture {
+          /* 오른쪽 사진: 고정 너비, 3:2 비율 */
+          @apply order-2 shrink-0;
+
           .img {
-            @apply w-full sm:w-64 sm:h-64 sm:shrink-0 sm:ml-8;
+            @apply w-24 h-16 sm:w-32 sm:h-[5.33rem];
 
             .thumb {
-              @apply w-full sm:w-64 sm:h-64 max-w-none object-cover bg-h-100;
+              @apply w-24 h-16 sm:w-32 sm:h-[5.33rem] max-w-none object-cover bg-h-100 rounded;
             }
           }
 
           .fallback {
-            @apply hidden;
+            @apply hidden w-24 h-16 sm:w-32 sm:h-[5.33rem] bg-h-300 dark:bg-h-600 rounded flex items-center justify-center;
+            
+            &::before {
+              content: '\f03e'; /* FontAwesome 이미지 아이콘 (fa-image) */
+              font-family: 'Font Awesome 6 Free';
+              font-weight: 400;
+              @apply text-xl text-h-400 dark:text-h-500;
+            }
+          }
+          
+          /* 썸네일이 없을 때 fallback 표시 */
+          .img:empty + .fallback,
+          &:not(:has(.img)) .fallback {
+            @apply flex;
           }
         }
 
         .info {
-          @apply sm:grow;
+          /* 왼쪽 텍스트: 남은 공간 사용 */
+          @apply order-1 flex-1 min-w-0;
 
           .header {
             @apply flex flex-col gap-y-1;
 
             .tit {
-              @apply text-xl lg:text-2xl font-bold text-h-800 dark:text-h-200;
+              /* 타이틀: 1줄로 제한, 말줄임 */
+              @apply text-sm sm:text-base lg:text-lg font-semibold text-h-800 dark:text-h-200;
+              @apply overflow-hidden text-ellipsis whitespace-nowrap;
             }
 
             .desc {
-              @apply flex gap-x-1 text-sm;
+              @apply flex flex-wrap gap-x-2 text-xs;
 
               * {
                 @apply text-h-400;
+              }
+
+              .category {
+                @apply text-h-blue font-medium;
               }
             }
           }
 
           .summary {
-            @apply mt-2 max-h-20 overflow-hidden leading-loose text-sm text-h-400;
+            @apply hidden;
           }
         }
       }
@@ -228,6 +252,25 @@ style
               .thumb {
                 @apply absolute top-0 left-0 w-full h-full object-cover bg-h-100;
               }
+            }
+            
+            .fallback {
+              @apply bg-h-300 dark:bg-h-600;
+              
+              &::before {
+                content: '\f03e'; /* FontAwesome 이미지 아이콘 (fa-image) */
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 400;
+                @apply absolute text-3xl text-h-400 dark:text-h-500;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+              }
+            }
+            
+            /* 썸네일이 없을 때 fallback 표시 */
+            .img:empty + .fallback {
+              @apply flex;
             }
           }
 
@@ -344,6 +387,25 @@ style
               .thumb {
                 @apply absolute top-0 left-0 w-full h-full object-cover bg-h-100 rounded-lg transition-transform duration-300;
               }
+            }
+            
+            .fallback {
+              @apply bg-h-300 dark:bg-h-600;
+              
+              &::before {
+                content: '\f03e'; /* FontAwesome 이미지 아이콘 (fa-image) */
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 400;
+                @apply absolute text-4xl text-h-400 dark:text-h-500;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+              }
+            }
+            
+            /* 썸네일이 없을 때 fallback 표시 */
+            .img:empty + .fallback {
+              @apply flex;
             }
           }
 

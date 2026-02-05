@@ -1,35 +1,37 @@
 s_list
   section#list(
     x-data='{ listStyle: "[##_list_style_##]" }'
-    x-init='$store.header.title = "[##_list_conform_##]"; listStyle = localStorage.getItem("h:listStyle") || listStyle'
+    x-init='$store.header.title = "[##_list_conform_##]"; listStyle = localStorage.getItem("h:listStyle") || (listStyle.startsWith("1x") ? "list" : "gallery")'
     :data-list-style='listStyle')
-    //- 보기 전환 버튼
-    .view-toggle(
+    //- 보기 전환 버튼 (중앙 배치)
+    .view-toggle-wrapper(
       x-show='listStyle !== "empty"'
-      class='mb-4 flex items-center justify-end gap-1')
-      //- 카드(앨범) 버튼
-      button(
-        @click='listStyle = "gallery"; localStorage.setItem("h:listStyle", "gallery")'
-        :class='listStyle === "gallery" ? "text-h-800 dark:text-h-200" : "text-h-400 hover:text-h-600 dark:hover:text-h-300"'
-        class='p-1.5 rounded transition-colors'
-        title='카드 뷰')
-        svg(xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round')
-          rect(width='7' height='7' x='3' y='3' rx='1')
-          rect(width='7' height='7' x='14' y='3' rx='1')
-          rect(width='7' height='7' x='14' y='14' rx='1')
-          rect(width='7' height='7' x='3' y='14' rx='1')
-      //- 리스트 버튼
-      button(
-        @click='listStyle = "list"; localStorage.setItem("h:listStyle", "list")'
-        :class='listStyle === "list" ? "text-h-800 dark:text-h-200" : "text-h-400 hover:text-h-600 dark:hover:text-h-300"'
-        class='p-1.5 rounded transition-colors'
-        title='리스트 뷰')
-        svg(xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round')
-          path(d='M15 12H3')
-          path(d='M17 18H3')
-          path(d='M21 6H3')
-    s_list_rep
-      +index('list_rep', true, { summary: false })
+      class='mb-6 flex items-center justify-center')
+      .view-toggle(class='flex items-center gap-0.5 bg-h-200 dark:bg-h-700 rounded-lg p-0.5')
+        //- 카드(앨범) 버튼
+        button(
+          @click='listStyle = "gallery"; localStorage.setItem("h:listStyle", "gallery")'
+          :class='listStyle === "gallery" ? "active" : ""'
+          class='view-btn'
+          title='카드 뷰')
+          svg(xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round')
+            rect(width='7' height='7' x='3' y='3' rx='1')
+            rect(width='7' height='7' x='14' y='3' rx='1')
+            rect(width='7' height='7' x='14' y='14' rx='1')
+            rect(width='7' height='7' x='3' y='14' rx='1')
+        //- 리스트 버튼
+        button(
+          @click='listStyle = "list"; localStorage.setItem("h:listStyle", "list")'
+          :class='listStyle === "list" ? "active" : ""'
+          class='view-btn'
+          title='리스트 뷰')
+          svg(xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round')
+            path(d='M15 12H3')
+            path(d='M17 18H3')
+            path(d='M21 6H3')
+    //- 게시물 목록
+    .posts-wrapper
+      s_list_rep
+        +index('list_rep', true, { summary: false })
     s_list_empty
       include List/Empty
-
