@@ -13,7 +13,10 @@ template(x-if='$data.headings.length > 0')
             :data-id='heading.id'
             x-text='heading.text'
             @click='$data.activeId = heading.id'
-            :class='$data.activeId === heading.id ? "is-active" : ""')
+            :class='{ \
+              "is-active": $data.activeId === heading.id, \
+              "is-parent-active": $data.activeParentId === heading.id && $data.activeId !== heading.id \
+            }')
 
 style(once='toc-kakao')
   :postcss
@@ -26,24 +29,48 @@ style(once='toc-kakao')
         @apply py-1.5;
         
         &.depth-2 {
-          @apply pl-4;
+          @apply pl-4 mt-4 first:mt-0;
+          
+          .toc-link {
+            @apply font-medium text-h-500 dark:text-h-400;
+          }
         }
         
         &.depth-3 {
-          @apply pl-8;
+          @apply pl-8 relative;
+          
+          /* H2~H2 사이 연결선 */
+          &::before {
+            content: '';
+            @apply absolute left-6 top-0 bottom-0 w-px bg-h-300 dark:bg-h-600;
+          }
         }
         
         &.depth-4 {
-          @apply pl-12;
+          @apply pl-12 relative;
+          
+          /* H2~H2 사이 연결선 */
+          &::before {
+            content: '';
+            @apply absolute left-6 top-0 bottom-0 w-px bg-h-300 dark:bg-h-600;
+          }
         }
       }
       
       .toc-link {
         @apply block text-h-400 dark:text-h-500 hover:text-h-700 dark:hover:text-h-300 transition-colors duration-200;
-        @apply border-l-2 border-transparent -ml-[2px] pl-4;
+        @apply border-l-2 border-transparent -ml-[2px] pl-4 py-1.5 rounded-md;
         
+        /* 현재 보고 있는 항목 */
         &.is-active {
           @apply text-h-700 dark:text-h-200 border-h-600 dark:border-h-400 font-medium;
+          @apply bg-h-200 dark:bg-h-700;
+        }
+        
+        /* 부모 H2 강조 */
+        &.is-parent-active {
+          @apply text-h-600 dark:text-h-300;
+          @apply bg-h-100 dark:bg-h-800;
         }
       }
     }
@@ -53,6 +80,7 @@ script(once='toc-scroll-spy').
     Alpine.data('toc', () => ({
       headings: [],
       activeId: '',
+      activeParentId: '',
       
       init() {
         // 헤딩 수집
@@ -60,39 +88,109 @@ script(once='toc-scroll-spy').
         if (!article) return;
         
         const headingElements = article.querySelectorAll('h2, h3, h4');
+        let currentParentId = '';
         
         this.headings = Array.from(headingElements).map((el, index) => {
           if (!el.id) {
             el.id = el.textContent.replace(/\s+/g, '-') + '-' + index;
           }
+          
+          // H2면 부모 갱신
+          if (el.tagName === 'H2') {
+            currentParentId = el.id;
+          }
+          
           return {
             id: el.id,
             tagName: el.tagName,
             text: el.textContent,
-            href: '#' + encodeURIComponent(el.id)
+            href: '#' + encodeURIComponent(el.id),
+            parentId: el.tagName === 'H2' ? null : currentParentId
           };
         });
         
         // 스크롤 스파이 (.main-content가 스크롤 컨테이너)
         if (this.headings.length > 0) {
           this.activeId = this.headings[0].id;
+          this.updateParentId(this.headings[0].id);
           
           const scrollContainer = document.querySelector('.main-content');
+          const headingEls = Array.from(headingElements);
           
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                this.activeId = entry.target.id;
+          // 스크롤 이벤트 기반 정밀 감지
+          const updateActiveHeading = () => {
+            const containerTop = scrollContainer ? scrollContainer.getBoundingClientRect().top : 0;
+            const offset = 100; // 상단 기준선 (헤더 높이 고려)
+            
+            let currentHeading = null;
+            
+            for (const el of headingEls) {
+              const rect = el.getBoundingClientRect();
+              const relativeTop = rect.top - containerTop;
+              
+              // 기준선(offset) 위에 있는 가장 마지막 헤딩
+              if (relativeTop <= offset) {
+                currentHeading = el;
+              } else {
+                break;
               }
-            });
-          }, {
-            root: scrollContainer,
-            rootMargin: '-10% 0px -80% 0px'
+            }
+            
+            // 첫 번째 헤딩보다 위에 있으면 첫 번째 선택
+            if (!currentHeading && headingEls.length > 0) {
+              currentHeading = headingEls[0];
+            }
+            
+            if (currentHeading && this.activeId !== currentHeading.id) {
+              this.activeId = currentHeading.id;
+              this.updateParentId(currentHeading.id);
+              this.scrollToActiveItem(currentHeading.id);
+            }
+          };
+          
+          // 스크롤 컨테이너에 이벤트 등록
+          const target = scrollContainer || window;
+          let ticking = false;
+          
+          target.addEventListener('scroll', () => {
+            if (!ticking) {
+              requestAnimationFrame(() => {
+                updateActiveHeading();
+                ticking = false;
+              });
+              ticking = true;
+            }
           });
           
-          headingElements.forEach(el => observer.observe(el));
+          // 초기 상태 설정
+          updateActiveHeading();
+        }
+      },
+      
+      updateParentId(activeId) {
+        const heading = this.headings.find(h => h.id === activeId);
+        if (heading) {
+          this.activeParentId = heading.parentId || '';
+        }
+      },
+      
+      scrollToActiveItem(activeId) {
+        // TOC 내 활성 항목으로 스크롤
+        const tocContainer = document.querySelector('.content-toc');
+        const activeLink = document.querySelector(`.toc-link[data-id="${activeId}"]`);
+        
+        if (tocContainer && activeLink) {
+          const containerRect = tocContainer.getBoundingClientRect();
+          const linkRect = activeLink.getBoundingClientRect();
+          
+          // 활성 항목이 TOC 영역 밖에 있으면 스크롤
+          if (linkRect.top < containerRect.top || linkRect.bottom > containerRect.bottom) {
+            activeLink.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
+            });
+          }
         }
       }
     }));
   });
-

@@ -17,10 +17,12 @@ header#header(
       time.date #{`[##_${type}_rep_date_##]`}
       if hasCategory
         include Header/Admin
-    //- 태그
+    //- 태그 (tagDictionary로 포맷팅 - 사이드바 태그와 동일)
     if hasCategory
       s_tag_label
-        .header-tags(class='flex flex-wrap justify-center gap-2 mt-3 text-sm w-full')
+        .header-tags(
+          x-data='tag'
+          class='flex flex-wrap justify-center gap-2 mt-3 text-sm w-full')
           | [##_tag_label_rep_##]
   //- 블루 악센트 구분선 (두껍게)
   .content-divider(class='mt-8 h-0.5 w-full')

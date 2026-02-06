@@ -58,12 +58,33 @@ style(once='toc-layout-style')
       @apply hidden;
       
       @media (min-width: 1280px) {
-        @apply block w-56 flex-shrink-0;
+        @apply block flex-shrink-0;
+        width: 320px;
         position: sticky;
         top: 2rem;
         max-height: calc(100vh - 4rem);
         overflow-y: auto;
         align-self: flex-start;
+        
+        /* 얇은 스크롤바 */
+        &::-webkit-scrollbar {
+          width: 4px;
+        }
+        
+        &::-webkit-scrollbar-track {
+          @apply bg-transparent;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+          @apply bg-h-300 dark:bg-h-600 rounded-full;
+        }
+        
+        &::-webkit-scrollbar-thumb:hover {
+          @apply bg-h-400 dark:bg-h-500;
+        }
+        
+        scrollbar-width: thin;
+        scrollbar-color: theme('colors.h.300') transparent;
       }
     }
 
