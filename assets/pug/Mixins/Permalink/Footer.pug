@@ -34,10 +34,11 @@ script(once='move-postbtn-to-footer').
       reportBtn.remove();
     }
     
-    // 티스토리 기본 구독 버튼 제거 (Author.pug에서 직접 렌더링)
+    // 티스토리 기본 구독 버튼을 Author 영역으로 이동
     const defaultSubscription = document.querySelector('.container_postbtn > .btn_subscription');
-    if (defaultSubscription) {
-      defaultSubscription.remove();
+    const authorArea = document.querySelector('#author');
+    if (defaultSubscription && authorArea) {
+      authorArea.appendChild(defaultSubscription);
     }
   });
 
@@ -49,9 +50,8 @@ style(once='footer-postbtn-style')
       .container_postbtn {
         @apply flex gap-x-3 p-0 text-h-600 dark:text-h-200;
 
-        /* 공통 버튼 스타일: 아이콘 + 텍스트 */
+        /* 공통 버튼 스타일: 아이콘 + 텍스트 (Author 영역으로 이동된 구독 버튼 제외) */
         .postbtn_like > .wrap_btn:not([id^=reaction-]) > button,
-        .btn_subscription,
         .tt-btn-support {
           @apply h-9 px-3 inline-flex items-center gap-x-2 shadow-none outline-0 rounded-md cursor-pointer duration-200 leading-none p-0 m-0 bg-h-200 border-0 hover:bg-h-300;
           @apply dark:bg-h-700 dark:hover:bg-h-600;
@@ -79,21 +79,56 @@ style(once='footer-postbtn-style')
               @apply text-hidden bg-none;
             }
 
-            /* 공감 버튼 (아이콘 + 텍스트) */
+            /* 공감 버튼 (아이콘 + count + 텍스트) */
             &[id^=reaction-] button {
               @apply px-4 h-9 rounded-md bg-h-200 hover:bg-h-300 inline-flex items-center gap-x-2;
               @apply dark:bg-h-700 dark:hover:bg-h-600;
 
-              .uoc-icon {
-                @apply text-h-500 dark:text-h-300;
+              /* 따봉 아이콘 (빈 아이콘 - Regular) */
+              &::before {
+                content: '\f164';
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 400;
+                @apply text-h-500 dark:text-h-300 transition-all text-base;
+              }
+
+              /* div.uoc-icon 컨테이너는 표시 */
+              div.uoc-icon {
+                @apply inline-flex items-center;
+                display: inline-flex !important;
+              }
+              
+              /* 기본 아이콘 숨김 */
+              .ico_like {
+                @apply hidden;
               }
 
               .uoc-count {
-                @apply font-bold leading-none text-h-600 dark:text-h-200;
+                @apply font-bold leading-none text-h-600 dark:text-h-200 text-sm;
+                display: inline-block !important;
+                font-size: 14px !important;
+                overflow: visible !important;
+                text-indent: 0 !important;
+                width: auto !important;
+                height: auto !important;
+                background: none !important;
 
-                &::before {
-                  @apply text-sm mr-1.5 fa-heart text-h-500 dark:text-h-300;
+                /* "좋아요" 텍스트 */
+                &::after {
+                  content: ' 좋아요';
+                  @apply text-sm font-normal text-h-500 dark:text-h-300;
                 }
+              }
+            }
+            
+            /* 좋아요 눌렀을 때 (활성화 상태) - .uoc-icon에 .like_on 클래스가 붙음 */
+            &[id^=reaction-]:has(.like_on) button {
+              @apply bg-h-blue/10;
+              
+              /* 채워진 따봉 아이콘 (Solid) + 파란색 */
+              &::before {
+                font-weight: 900 !important;
+                @apply text-h-blue;
               }
             }
 

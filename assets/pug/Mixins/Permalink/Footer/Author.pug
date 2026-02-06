@@ -13,13 +13,8 @@
       //- 소셜 링크 (사이드바에서 Github 링크 복사)
       .author-links#author-social-links(class='flex gap-x-3 mt-2')
 
-  //- 구독 버튼 (티스토리 #subscribe 클래스로 자동 처리)
-  button.btn_subscription(
-    type='button'
-    class='#subscribe h-10 px-4 inline-flex items-center gap-x-2 rounded-md cursor-pointer duration-200 bg-h-200 hover:bg-h-300 text-h-600 dark:bg-h-700 dark:hover:bg-h-600 dark:text-h-200'
-    data-device='web_pc')
-    i.fa-solid.fa-bell.subscription-icon
-    span.txt_state 구독
+  //- 구독 버튼은 Footer.pug에서 티스토리 기본 버튼을 이동시킴
+  //- 여기는 이동된 버튼이 배치될 영역
 
 //- 사이드바 링크에서 Github만 복사하여 표시 (LinkedIn은 등록되지 않음)
 script(once='author-links-clone').
@@ -60,8 +55,67 @@ style(once='namecard')
       @apply hidden;
     }
     
-    #author .btn_subscription {
+    /* Author 영역으로 이동된 구독 버튼 스타일 */
+    #author > .btn_subscription {
+      @apply h-9 px-4 inline-flex items-center gap-x-2 rounded-md cursor-pointer transition-all;
+      @apply bg-h-200 hover:bg-h-300;
+      @apply dark:bg-h-700 dark:hover:bg-h-600;
+      
+      /* 벨 아이콘 (빈 아이콘 - Regular) */
+      &::before {
+        content: '\f0f3';
+        font-family: 'Font Awesome 6 Free' !important;
+        font-weight: 400;
+        @apply text-h-500 dark:text-h-300 transition-all text-base;
+      }
+      
+      .ico_check_type1 {
+        @apply hidden;
+      }
+      
+      /* 기존 텍스트 완전 숨김 및 '구독'으로 교체 */
       .txt_state {
+        font-size: 0 !important;
+        width: 0 !important;
+        overflow: hidden !important;
+        
+        &::after {
+          content: '구독';
+          font-size: 14px !important;
+          font-weight: 400 !important;
+          @apply text-h-600 dark:text-h-200;
+        }
+      }
+      
+      .txt_tool_id {
+        @apply hidden;
+      }
+      
+      /* 구독 텍스트 - 버튼에 직접 표시 */
+      &::after {
+        content: '구독';
         @apply text-sm;
+      }
+      
+      /* 구독중 상태 - 티스토리는 .following 클래스를 사용 */
+      &.following {
+        @apply bg-h-blue/10;
+        
+        /* 채워진 벨 아이콘 (Solid) + 파란색 */
+        &::before {
+          font-weight: 900;
+          @apply text-h-blue;
+        }
+        
+        /* 텍스트를 '구독중'으로 교체 */
+        &::after {
+          content: '구독중';
+          @apply text-h-blue;
+        }
+        
+        .txt_state::after {
+          content: '구독중';
+          @apply text-h-blue;
+        }
       }
     }

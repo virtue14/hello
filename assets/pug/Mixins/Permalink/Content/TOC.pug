@@ -12,7 +12,7 @@ template(x-if='$data.headings.length > 0')
             :href='heading.href'
             :data-id='heading.id'
             x-text='heading.text'
-            @click='$data.activeId = heading.id'
+            @click.prevent='$data.scrollToHeading(heading.id)'
             :class='{ \
               "is-active": $data.activeId === heading.id, \
               "is-parent-active": $data.activeParentId === heading.id && $data.activeId !== heading.id \
@@ -191,6 +191,22 @@ script(once='toc-scroll-spy').
             });
           }
         }
+      },
+      
+      scrollToHeading(headingId) {
+        // 본문 헤딩으로 부드럽게 스크롤
+        const targetEl = document.getElementById(headingId);
+        if (targetEl) {
+          targetEl.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+          
+          // 활성 상태 업데이트
+          this.activeId = headingId;
+          this.updateParentId(headingId);
+        }
       }
     }));
   });
+
